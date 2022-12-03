@@ -1,0 +1,1 @@
+export default __webpack_public_path__ + "dio/templates/cloud/gcp/gcp_backup_and_archive_api_hosting.png";

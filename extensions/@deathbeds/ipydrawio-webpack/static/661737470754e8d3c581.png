@@ -1,0 +1,1 @@
+export default __webpack_public_path__ + "dio/templates/cloud/gcp/gcp_lifesciences_genomics_secondary_analysis.png";

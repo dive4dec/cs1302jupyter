@@ -1,0 +1,1 @@
+export default __webpack_public_path__ + "dio/plugins/p1.js";

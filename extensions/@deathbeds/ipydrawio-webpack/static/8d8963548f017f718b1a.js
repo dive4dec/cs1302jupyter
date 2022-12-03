@@ -1,0 +1,1 @@
+export default __webpack_public_path__ + "dio/js/shapes-14-6-5.min.js";

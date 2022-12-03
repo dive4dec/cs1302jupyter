@@ -1,0 +1,45 @@
+{
+  "name": "@deathbeds/ipydrawio-notebook",
+  "version": "1.2.2",
+  "homepage": "https://ipydrawio.rtfd.io",
+  "bugs": {
+    "url": "https://github.com/deathbeds/ipydrawio/issues"
+  },
+  "main": "lib/index.js",
+  "files": [
+    "{lib,schema,style,src}/**/*.{ts,tsx,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,css}"
+  ],
+  "dependencies": {
+    "@deathbeds/ipydrawio": "^1.2.2",
+    "@jupyterlab/application": "^3.1.0",
+    "@jupyterlab/notebook": "^3.1.0"
+  },
+  "devDependencies": {
+    "@jupyterlab/builder": "^3.4.0"
+  },
+  "jupyterlab": {
+    "extension": "lib/plugin.js",
+    "outputDir": "../../py_packages/ipydrawio/_/ipydrawio-notebook",
+    "sharedPackages": {
+      "@deathbeds/ipydrawio": {
+        "bundled": false,
+        "singleton": true
+      }
+    },
+    "discovery": {
+      "server": {
+        "base": {
+          "name": "ipydrawio"
+        },
+        "managers": [
+          "pip",
+          "conda"
+        ]
+      }
+    },
+    "_build": {
+      "load": "static/remoteEntry.71440efb81f9f742fd6c.js",
+      "extension": "./extension"
+    }
+  }
+}

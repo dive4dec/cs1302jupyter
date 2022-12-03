@@ -1,0 +1,1 @@
+export default __webpack_public_path__ + "dio/templates/cloud/gcp/gcp_retail_beacons_and_targeted_marketing.xml";

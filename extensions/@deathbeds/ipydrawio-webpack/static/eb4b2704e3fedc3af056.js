@@ -1,0 +1,1 @@
+export default __webpack_public_path__ + "dio/js/simplepeer/simplepeer9.10.0.min.js";

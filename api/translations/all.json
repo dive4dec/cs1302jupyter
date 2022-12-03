@@ -1,0 +1,17 @@
+{
+  "data": {
+    "en": {
+      "displayName": "English",
+      "nativeName": "English"
+    },
+    "zh_CN": {
+      "displayName": "Chinese (Simplified, China)",
+      "nativeName": "\u4e2d\u6587 (\u7b80\u4f53, \u4e2d\u56fd)"
+    },
+    "zh_TW": {
+      "displayName": "Chinese (Traditional, Taiwan)",
+      "nativeName": "\u4e2d\u6587 (\u7e41\u9ad4, \u53f0\u7063)"
+    }
+  },
+  "message": ""
+}

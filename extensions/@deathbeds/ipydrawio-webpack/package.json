@@ -1,0 +1,50 @@
+{
+  "name": "@deathbeds/ipydrawio-webpack",
+  "version": "20.5.300",
+  "description": "A webpack-ready repackaging of drawio",
+  "license": "Apache-2.0",
+  "author": "IPyDrawio Contributors",
+  "homepage": "https://ipydrawio.rtfd.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deathbeds/ipydrawio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/deathbeds/ipydrawio/issues"
+  },
+  "main": "lib/index.js",
+  "scripts": {
+    "build:pre": "python -m scripts.patch && python -m scripts.static"
+  },
+  "types": "lib/index.d.ts",
+  "dependencies": {
+    "@jupyterlab/application": "^3.1.0"
+  },
+  "devDependencies": {
+    "@jupyterlab/builder": "^3.4.0"
+  },
+  "keywords": [
+    "drawio",
+    "webpack"
+  ],
+  "jupyterlab": {
+    "extension": "lib/plugin.js",
+    "outputDir": "../../py_packages/ipydrawio/_/ipydrawio-webpack",
+    "webpackConfig": "./webpack.config.js",
+    "discovery": {
+      "server": {
+        "base": {
+          "name": "ipydrawio"
+        },
+        "managers": [
+          "pip",
+          "conda"
+        ]
+      }
+    },
+    "_build": {
+      "load": "static/remoteEntry.b3520935a526b3c010d2.js",
+      "extension": "./extension"
+    }
+  }
+}

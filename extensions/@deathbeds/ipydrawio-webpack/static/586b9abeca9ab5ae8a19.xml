@@ -1,0 +1,1 @@
+export default __webpack_public_path__ + "dio/templates/network/cisco_1.xml";

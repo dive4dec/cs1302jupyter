@@ -1,0 +1,1 @@
+export default __webpack_public_path__ + "dio/templates/maps/living_beings_mind_map.xml";

@@ -1,0 +1,1 @@
+export default __webpack_public_path__ + "dio/images/mstile-150x150.png";

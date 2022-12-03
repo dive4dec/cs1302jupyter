@@ -1,0 +1,81 @@
+{
+  "name": "@deathbeds/ipydrawio",
+  "version": "1.2.2",
+  "description": "A JupyterLab extension for embedding interactive drawio / mxgraph diagrams.",
+  "license": "Apache-2.0",
+  "author": "IPyDrawio Contributors",
+  "homepage": "https://ipydrawio.rtfd.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deathbeds/ipydrawio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/deathbeds/ipydrawio/issues"
+  },
+  "main": "lib/index.js",
+  "files": [
+    "{lib,schema,style,src}/**/*.{ts,tsx,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,css}"
+  ],
+  "scripts": {
+    "build:pre": "python scripts/schema.py"
+  },
+  "types": "lib/index.d.ts",
+  "dependencies": {
+    "@deathbeds/ipydrawio-webpack": "^20.5.300",
+    "@jupyterlab/application": "^3.1.0",
+    "@jupyterlab/launcher": "^3.1.0",
+    "@jupyterlab/mainmenu": "^3.1.0"
+  },
+  "peerDependencies": {
+    "@jupyter-widgets/base": "^4.0.0 || ^6.0.0",
+    "@jupyter-widgets/controls": "^3.0.0 || ^5.0.0",
+    "@jupyter-widgets/jupyterlab-manager": "^3.0.0 || ^5.0.0"
+  },
+  "devDependencies": {
+    "@jupyter-widgets/base": "^4.0.0 || ^6.0.0",
+    "@jupyter-widgets/controls": "^3.0.0 || ^5.0.0",
+    "@jupyter-widgets/jupyterlab-manager": "^3.0.0 || ^5.0.0",
+    "@jupyterlab/builder": "^3.4.0"
+  },
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
+  "jupyterlab": {
+    "extension": "lib/plugin.js",
+    "mimeExtension": "lib/mime.js",
+    "schemaDir": "schema",
+    "outputDir": "../../py_packages/ipydrawio/_/ipydrawio",
+    "sharedPackages": {
+      "@deathbeds/ipydrawio-webpack": {
+        "bundled": false,
+        "singleton": true
+      },
+      "@jupyter-widgets/base": {
+        "bundled": false,
+        "singleton": true
+      },
+      "@jupyter-widgets/controls": {
+        "bundled": false,
+        "singleton": true
+      }
+    },
+    "discovery": {
+      "server": {
+        "base": {
+          "name": "ipydrawio"
+        },
+        "managers": [
+          "pip",
+          "conda"
+        ]
+      }
+    },
+    "_build": {
+      "load": "static/remoteEntry.ea560b1069a7ce3142f5.js",
+      "extension": "./extension",
+      "mimeExtension": "./mimeExtension"
+    }
+  }
+}
