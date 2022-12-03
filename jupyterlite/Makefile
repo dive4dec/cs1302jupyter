@@ -1,22 +1,19 @@
 SHELL:= /bin/bash
+activate_conda = source /opt/conda/bin/activate && conda activate jlite
 
-all: activate clean build page deactivate
-
-activate:
-	conda activate jlite
-
-deactivate:
-	conda deactivate jlite
+all: clean build page
 
 clean:
-	rm -irf _output .jupyterlite.doit.db
+	rm -rf _output .jupyterlite.doit.db
 
 build:
-	# run twice to get wtc setup
-	jupyter lite build && \
-	jupyter lite build
+	# run jlite twice to get wtc setup
+	$(activate_conda) && \
+	jupyter lite build && jupyter lite build && \
+	python kernel2xeus_python.py _output/files/main.ipynb
 
 page:
+	$(activate_conda) && \
 	ghp-import -np _output
 
 
