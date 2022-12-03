@@ -1,0 +1,33 @@
+ARG BASE_CONTAINER=jupyter/scipy-notebook
+
+FROM ${BASE_CONTAINER}
+
+USER ${NB_UID}
+
+RUN pip install --quiet --no-cache-dir \
+    'divewidgets' \
+    'divemathjax3' \
+    'divemarkdownit' \
+    'otter-grader==4.*' \
+    && \
+    fix-permissions "${CONDA_DIR}"
+
+COPY --chown=${NB_UID}:${NB_GID} /dev/rise-5.8.0-py2.py3-none-any.whl /tmp/rise-5.8.0-py2.py3-none-any.whl
+
+# pip install --quiet --no-cache-dir --upgrade --no-deps --force-reinstall \
+#     'jupyterlab_server<=2.12' \
+#     && \
+RUN pip install --quiet --no-cache-dir \
+    'jupyter-contrib-nbextensions' \
+    '/tmp/rise-5.8.0-py2.py3-none-any.whl' && \
+    jupyter server extension enable rise && \
+    jupyter serverextension enable rise --sys-prefix && \
+    jupyter nbextension install rise --py --sys-prefix && \
+    jupyter nbextension enable rise --py --sys-prefix && \
+    jupyter contrib nbextension install --sys-prefix && \
+    fix-permissions "${CONDA_DIR}" && \
+    rm -rf /tmp/RISE
+
+WORKDIR "${HOME}"
+
+CMD ["start-notebook.sh", "--LabApp.collaborative=True"]
