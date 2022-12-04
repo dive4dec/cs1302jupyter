@@ -2,7 +2,7 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-04T16:48:13.851335Z",
+      "created": "2022-12-04T17:07:30.660232Z",
       "format": null,
       "last_modified": "2022-12-04T15:30:28.042639Z",
       "mimetype": null,
@@ -14,7 +14,7 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T16:48:13.856326Z",
+      "created": "2022-12-04T17:07:30.665236Z",
       "format": null,
       "last_modified": "2022-12-04T15:30:28.040635Z",
       "mimetype": "text/plain",
@@ -25,9 +25,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-04T16:48:13.854328Z",
+  "created": "2022-12-04T17:07:30.664232Z",
   "format": "json",
-  "last_modified": "2022-12-04T16:48:13.854328Z",
+  "last_modified": "2022-12-04T17:07:30.664232Z",
   "mimetype": null,
   "name": "Lecture1",
   "path": "Lecture1",

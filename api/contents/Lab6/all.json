@@ -2,7 +2,7 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-04T16:48:13.807326Z",
+      "created": "2022-12-04T17:07:30.616236Z",
       "format": null,
       "last_modified": "2022-12-04T15:30:27.917633Z",
       "mimetype": null,
@@ -14,7 +14,7 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T16:48:13.811334Z",
+      "created": "2022-12-04T17:07:30.621236Z",
       "format": null,
       "last_modified": "2022-12-04T15:30:27.920624Z",
       "mimetype": "text/plain",
@@ -25,9 +25,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-04T16:48:13.810327Z",
+  "created": "2022-12-04T17:07:30.620232Z",
   "format": "json",
-  "last_modified": "2022-12-04T16:48:13.810327Z",
+  "last_modified": "2022-12-04T17:07:30.620232Z",
   "mimetype": null,
   "name": "Lab6",
   "path": "Lab6",
