@@ -3,7 +3,7 @@
 {
 	"name": "CS1302 Jupyter",
 
-	"image": "chungc/cs1302nb:0.0.2a",
+	"image": "chungc/cs1302nb:0.0.2b",
 
 	// See https://faun.pub/understanding-docker-container-memory-limit-behavior-41add155236c
 	"runArgs": ["-m","8g"],

@@ -3,7 +3,7 @@ SHELL:= /bin/bash
 REGISTRY=localhost:32000
 # REGISTRY=chungc
 # version for tagging image for deployment
-VERSION=0.0.2a
+VERSION=0.0.2b
 
 push-%:
 	docker tag "$*" "${REGISTRY}/$*:${VERSION}"

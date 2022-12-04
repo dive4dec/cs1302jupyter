@@ -60,6 +60,7 @@ RUN mamba install --quiet --yes \
     'jupyter-vscode-proxy=0.1.*' \
     'ipydrawio=1.2.*' \
     'ipydrawio-export=1.2.*' \
+    'ipydrawio-mathjax=1.2.*' \
     'jupyter-offlinenotebook=0.2.*' \
     'jupyterlab-system-monitor=0.8.*' \
     'jupyterlab-spellchecker=0.7.*' \
