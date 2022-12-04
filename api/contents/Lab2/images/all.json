@@ -1,0 +1,61 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.705333Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.988628Z",
+      "mimetype": "image/svg+xml",
+      "name": "byte-to-decimal.dio.svg",
+      "path": "Lab2/images/byte-to-decimal.dio.svg",
+      "size": 22881,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.711330Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.993628Z",
+      "mimetype": "image/svg+xml",
+      "name": "decimal-to-byte.dio.svg",
+      "path": "Lab2/images/decimal-to-byte.dio.svg",
+      "size": 9043,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.717335Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.998624Z",
+      "mimetype": "image/svg+xml",
+      "name": "pythagoras.dio.svg",
+      "path": "Lab2/images/pythagoras.dio.svg",
+      "size": 8582,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.723330Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.991624Z",
+      "mimetype": "image/svg+xml",
+      "name": "quadratic.dio.svg",
+      "path": "Lab2/images/quadratic.dio.svg",
+      "size": 11066,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-04T16:48:13.721328Z",
+  "format": "json",
+  "last_modified": "2022-12-04T16:48:13.721328Z",
+  "mimetype": null,
+  "name": "images",
+  "path": "Lab2/images",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

@@ -1,0 +1,37 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.977325Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:28.027641Z",
+      "mimetype": null,
+      "name": "Dictionaries and Sets.ipynb",
+      "path": "Lecture8/Dictionaries and Sets.ipynb",
+      "size": 43371,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.981335Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:28.025627Z",
+      "mimetype": "text/plain",
+      "name": "requirements.txt",
+      "path": "Lecture8/requirements.txt",
+      "size": 40,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-04T16:48:13.980326Z",
+  "format": "json",
+  "last_modified": "2022-12-04T16:48:13.980326Z",
+  "mimetype": null,
+  "name": "Lecture8",
+  "path": "Lecture8",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

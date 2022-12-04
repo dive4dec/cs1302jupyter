@@ -1,0 +1,49 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.775336Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.973624Z",
+      "mimetype": null,
+      "name": "main.ipynb",
+      "path": "Lab4/main.ipynb",
+      "size": 56995,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.781329Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.978624Z",
+      "mimetype": "text/x-python",
+      "name": "markposition.py",
+      "path": "Lab4/markposition.py",
+      "size": 1204,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.786336Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.976624Z",
+      "mimetype": "text/plain",
+      "name": "requirements.txt",
+      "path": "Lab4/requirements.txt",
+      "size": 50,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-04T16:48:13.785327Z",
+  "format": "json",
+  "last_modified": "2022-12-04T16:48:13.785327Z",
+  "mimetype": null,
+  "name": "Lab4",
+  "path": "Lab4",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

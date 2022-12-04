@@ -1,0 +1,37 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.749330Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.967624Z",
+      "mimetype": null,
+      "name": "main.ipynb",
+      "path": "Lab3a/main.ipynb",
+      "size": 16035,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.755327Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.969628Z",
+      "mimetype": "text/plain",
+      "name": "requirements.txt",
+      "path": "Lab3a/requirements.txt",
+      "size": 50,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-04T16:48:13.753327Z",
+  "format": "json",
+  "last_modified": "2022-12-04T16:48:13.753327Z",
+  "mimetype": null,
+  "name": "Lab3a",
+  "path": "Lab3a",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

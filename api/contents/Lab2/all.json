@@ -1,0 +1,61 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.721328Z",
+      "format": null,
+      "last_modified": "2022-12-04T16:48:13.721328Z",
+      "mimetype": null,
+      "name": "images",
+      "path": "Lab2/images",
+      "size": null,
+      "type": "directory",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.729330Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:28.001624Z",
+      "mimetype": "text/x-python",
+      "name": "jsxgraphs.py",
+      "path": "Lab2/jsxgraphs.py",
+      "size": 17237,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.735334Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:28.004624Z",
+      "mimetype": null,
+      "name": "main.ipynb",
+      "path": "Lab2/main.ipynb",
+      "size": 31489,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.742330Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:28.006629Z",
+      "mimetype": "text/plain",
+      "name": "requirements.txt",
+      "path": "Lab2/requirements.txt",
+      "size": 74,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-04T16:48:13.740326Z",
+  "format": "json",
+  "last_modified": "2022-12-04T16:48:13.740326Z",
+  "mimetype": null,
+  "name": "Lab2",
+  "path": "Lab2",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

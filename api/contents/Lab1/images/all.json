@@ -1,0 +1,37 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.678331Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.832626Z",
+      "mimetype": "image/svg+xml",
+      "name": "card_game.dio.svg",
+      "path": "Lab1/images/card_game.dio.svg",
+      "size": 287584,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.685334Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.834629Z",
+      "mimetype": "image/svg+xml",
+      "name": "dt.dio.svg",
+      "path": "Lab1/images/dt.dio.svg",
+      "size": 20604,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-04T16:48:13.684326Z",
+  "format": "json",
+  "last_modified": "2022-12-04T16:48:13.684326Z",
+  "mimetype": null,
+  "name": "images",
+  "path": "Lab1/images",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

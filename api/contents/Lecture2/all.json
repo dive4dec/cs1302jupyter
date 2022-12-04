@@ -1,0 +1,73 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.862329Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.810633Z",
+      "mimetype": "text/x-c++src",
+      "name": "456.cpp",
+      "path": "Lecture2/456.cpp",
+      "size": 80,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.867331Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.813629Z",
+      "mimetype": "text/x-java",
+      "name": "456.java",
+      "path": "Lecture2/456.java",
+      "size": 114,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.872332Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.816629Z",
+      "mimetype": null,
+      "name": "Expressions and Arithmetic.ipynb",
+      "path": "Lecture2/Expressions and Arithmetic.ipynb",
+      "size": 16387,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.877329Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.819625Z",
+      "mimetype": null,
+      "name": "Values and Variables.ipynb",
+      "path": "Lecture2/Values and Variables.ipynb",
+      "size": 58017,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.882329Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.808629Z",
+      "mimetype": "text/plain",
+      "name": "requirements.txt",
+      "path": "Lecture2/requirements.txt",
+      "size": 22,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-04T16:48:13.881326Z",
+  "format": "json",
+  "last_modified": "2022-12-04T16:48:13.881326Z",
+  "mimetype": null,
+  "name": "Lecture2",
+  "path": "Lecture2",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

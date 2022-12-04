@@ -1,0 +1,49 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.926326Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.957624Z",
+      "mimetype": null,
+      "name": "Objects.ipynb",
+      "path": "Lecture5/Objects.ipynb",
+      "size": 56974,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.930333Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.960624Z",
+      "mimetype": "text/csv",
+      "name": "contact.csv",
+      "path": "Lecture5/contact.csv",
+      "size": 426,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.935325Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.962628Z",
+      "mimetype": "text/plain",
+      "name": "requirements.txt",
+      "path": "Lecture5/requirements.txt",
+      "size": 22,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-04T16:48:13.934325Z",
+  "format": "json",
+  "last_modified": "2022-12-04T16:48:13.934325Z",
+  "mimetype": null,
+  "name": "Lecture5",
+  "path": "Lecture5",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}

@@ -1,0 +1,61 @@
+{
+  "content": [
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.941332Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.950626Z",
+      "mimetype": null,
+      "name": "Decorator.ipynb",
+      "path": "Lecture6/Decorator.ipynb",
+      "size": 37409,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.946329Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.953624Z",
+      "mimetype": null,
+      "name": "Generator.ipynb",
+      "path": "Lecture6/Generator.ipynb",
+      "size": 34104,
+      "type": "notebook",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.951325Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.945624Z",
+      "mimetype": "text/x-python",
+      "name": "recurtools.py",
+      "path": "Lecture6/recurtools.py",
+      "size": 3642,
+      "type": "file",
+      "writable": true
+    },
+    {
+      "content": null,
+      "created": "2022-12-04T16:48:13.955335Z",
+      "format": null,
+      "last_modified": "2022-12-04T15:30:27.947626Z",
+      "mimetype": "text/plain",
+      "name": "requirements.txt",
+      "path": "Lecture6/requirements.txt",
+      "size": 22,
+      "type": "file",
+      "writable": true
+    }
+  ],
+  "created": "2022-12-04T16:48:13.954326Z",
+  "format": "json",
+  "last_modified": "2022-12-04T16:48:13.954326Z",
+  "mimetype": null,
+  "name": "Lecture6",
+  "path": "Lecture6",
+  "size": null,
+  "type": "directory",
+  "writable": true
+}
