@@ -1,4 +1,11 @@
 {
+    "LiteBuildConfig": {
+        "extra_ignore_contents": [
+            "/.devcontainer",
+            "/.ipynb_checkpoints",
+            "/README.md"
+        ]
+    },
     "XeusPythonEnv": {
         "packages": [
             "numpy",

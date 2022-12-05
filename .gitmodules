@@ -4,3 +4,9 @@
 [submodule "cs1302-deploy"]
 	path = cs1302-deploy
 	url = git@github.com:dive4dec/cs1302-deploy
+[submodule "release"]
+	path = release
+	url = https://github.com/dive4dec/cs1302
+[submodule "source"]
+	path = source
+	url = git@github.com:dive4dec/cs1302i.git

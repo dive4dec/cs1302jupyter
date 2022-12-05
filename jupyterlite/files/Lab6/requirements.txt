@@ -1,4 +1,0 @@
-otter-grader
-jupytext
-ipywidgets
-divewidgets

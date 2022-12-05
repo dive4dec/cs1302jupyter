@@ -1,7 +1,0 @@
-otter-grader
-jupytext
-ipywidgets
-divewidgets
-numpy
-ipympl
-matplotlib
