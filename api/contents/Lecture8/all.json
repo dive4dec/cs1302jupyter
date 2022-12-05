@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.785231Z",
+      "created": "2022-12-05T04:24:45.228414Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:28.027641Z",
+      "last_modified": "2022-12-05T03:43:39.822576Z",
       "mimetype": null,
       "name": "Dictionaries and Sets.ipynb",
       "path": "Lecture8/Dictionaries and Sets.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.789235Z",
+      "created": "2022-12-05T04:24:45.234414Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:28.025627Z",
+      "last_modified": "2022-12-05T03:43:39.820576Z",
       "mimetype": "text/plain",
       "name": "requirements.txt",
       "path": "Lecture8/requirements.txt",
@@ -25,9 +25,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-04T17:07:30.788232Z",
+  "created": "2022-12-05T04:24:45.232415Z",
   "format": "json",
-  "last_modified": "2022-12-04T17:07:30.788232Z",
+  "last_modified": "2022-12-05T04:24:45.232415Z",
   "mimetype": null,
   "name": "Lecture8",
   "path": "Lecture8",

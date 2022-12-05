@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.718236Z",
+      "created": "2022-12-05T04:24:45.148414Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.788631Z",
+      "last_modified": "2022-12-05T03:43:39.784578Z",
       "mimetype": null,
       "name": "Using Functions.ipynb",
       "path": "Lecture4/Using Functions.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.723242Z",
+      "created": "2022-12-05T04:24:45.154414Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.791628Z",
+      "last_modified": "2022-12-05T03:43:39.786581Z",
       "mimetype": null,
       "name": "Writing Functions.ipynb",
       "path": "Lecture4/Writing Functions.ipynb",
@@ -26,9 +26,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.728236Z",
+      "created": "2022-12-05T04:24:45.159418Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.784629Z",
+      "last_modified": "2022-12-05T03:43:39.781581Z",
       "mimetype": "text/plain",
       "name": "requirements.txt",
       "path": "Lecture4/requirements.txt",
@@ -37,9 +37,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-04T17:07:30.727232Z",
+  "created": "2022-12-05T04:24:45.158415Z",
   "format": "json",
-  "last_modified": "2022-12-04T17:07:30.727232Z",
+  "last_modified": "2022-12-05T04:24:45.158415Z",
   "mimetype": null,
   "name": "Lecture4",
   "path": "Lecture4",

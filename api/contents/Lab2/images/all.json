@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.531232Z",
+      "created": "2022-12-05T04:24:44.939419Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.988628Z",
+      "last_modified": "2022-12-05T03:43:39.669585Z",
       "mimetype": "image/svg+xml",
       "name": "byte-to-decimal.dio.svg",
       "path": "Lab2/images/byte-to-decimal.dio.svg",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.536232Z",
+      "created": "2022-12-05T04:24:44.944419Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.993628Z",
+      "last_modified": "2022-12-05T03:43:39.674581Z",
       "mimetype": "image/svg+xml",
       "name": "decimal-to-byte.dio.svg",
       "path": "Lab2/images/decimal-to-byte.dio.svg",
@@ -26,9 +26,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.541232Z",
+      "created": "2022-12-05T04:24:44.949420Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.998624Z",
+      "last_modified": "2022-12-05T03:43:39.676577Z",
       "mimetype": "image/svg+xml",
       "name": "pythagoras.dio.svg",
       "path": "Lab2/images/pythagoras.dio.svg",
@@ -38,9 +38,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.546232Z",
+      "created": "2022-12-05T04:24:44.954426Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.991624Z",
+      "last_modified": "2022-12-05T03:43:39.672576Z",
       "mimetype": "image/svg+xml",
       "name": "quadratic.dio.svg",
       "path": "Lab2/images/quadratic.dio.svg",
@@ -49,9 +49,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-04T17:07:30.544233Z",
+  "created": "2022-12-05T04:24:44.953416Z",
   "format": "json",
-  "last_modified": "2022-12-04T17:07:30.544233Z",
+  "last_modified": "2022-12-05T04:24:44.953416Z",
   "mimetype": null,
   "name": "images",
   "path": "Lab2/images",

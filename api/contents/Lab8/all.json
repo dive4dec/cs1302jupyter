@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.637241Z",
+      "created": "2022-12-05T04:24:45.060426Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.905624Z",
+      "last_modified": "2022-12-05T03:43:39.728576Z",
       "mimetype": null,
       "name": "main.ipynb",
       "path": "Lab8/main.ipynb",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.643239Z",
+      "created": "2022-12-05T04:24:45.065418Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.907628Z",
+      "last_modified": "2022-12-05T03:43:39.730576Z",
       "mimetype": "text/plain",
       "name": "requirements.txt",
       "path": "Lab8/requirements.txt",
@@ -25,9 +25,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-04T17:07:30.642233Z",
+  "created": "2022-12-05T04:24:45.064414Z",
   "format": "json",
-  "last_modified": "2022-12-04T17:07:30.642233Z",
+  "last_modified": "2022-12-05T04:24:45.064414Z",
   "mimetype": null,
   "name": "Lab8",
   "path": "Lab8",

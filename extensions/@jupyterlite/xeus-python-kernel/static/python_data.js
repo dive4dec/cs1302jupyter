@@ -19,7 +19,7 @@
         // web worker
         PACKAGE_PATH = encodeURIComponent(location.pathname.toString().substring(0, location.pathname.toString().lastIndexOf('/')) + '/');
       }
-      var PACKAGE_NAME = '/tmp/tmp68_tdmyb/python_data.data';
+      var PACKAGE_NAME = '/tmp/tmprpe6l80z/python_data.data';
       var REMOTE_PACKAGE_BASE = 'python_data.data';
       if (typeof Module['locateFilePackage'] === 'function' && !Module['locateFile']) {
         Module['locateFile'] = Module['locateFilePackage'];
@@ -498,9 +498,9 @@ Module['FS_createPath']("/tmp/xeus-python-kernel/envs/xeus-python-kernel/lib/pyt
             compressedData['data'] = byteArray;
             assert(typeof Module['LZ4'] === 'object', 'LZ4 not present - was your app build with -sLZ4?');
             Module['LZ4'].loadPackage({ 'metadata': metadata, 'compressedData': compressedData }, true);
-            Module['removeRunDependency']('datafile_/tmp/tmp68_tdmyb/python_data.data');
+            Module['removeRunDependency']('datafile_/tmp/tmprpe6l80z/python_data.data');
       };
-      Module['addRunDependency']('datafile_/tmp/tmp68_tdmyb/python_data.data');
+      Module['addRunDependency']('datafile_/tmp/tmprpe6l80z/python_data.data');
 
       if (!Module.preloadResults) Module.preloadResults = {};
 

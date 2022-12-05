@@ -2,9 +2,9 @@
   "content": [
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.511233Z",
+      "created": "2022-12-05T04:24:44.920416Z",
       "format": null,
-      "last_modified": "2022-12-04T17:07:30.511233Z",
+      "last_modified": "2022-12-05T04:24:44.920416Z",
       "mimetype": null,
       "name": "images",
       "path": "Lab1/images",
@@ -14,9 +14,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.519237Z",
+      "created": "2022-12-05T04:24:44.927417Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.823624Z",
+      "last_modified": "2022-12-05T03:43:39.652577Z",
       "mimetype": null,
       "name": "main.ipynb",
       "path": "Lab1/main.ipynb",
@@ -26,9 +26,9 @@
     },
     {
       "content": null,
-      "created": "2022-12-04T17:07:30.524235Z",
+      "created": "2022-12-05T04:24:44.932419Z",
       "format": null,
-      "last_modified": "2022-12-04T15:30:27.825631Z",
+      "last_modified": "2022-12-05T03:43:39.654578Z",
       "mimetype": "text/plain",
       "name": "requirements.txt",
       "path": "Lab1/requirements.txt",
@@ -37,9 +37,9 @@
       "writable": true
     }
   ],
-  "created": "2022-12-04T17:07:30.522234Z",
+  "created": "2022-12-05T04:24:44.931415Z",
   "format": "json",
-  "last_modified": "2022-12-04T17:07:30.522234Z",
+  "last_modified": "2022-12-05T04:24:44.931415Z",
   "mimetype": null,
   "name": "Lab1",
   "path": "Lab1",
