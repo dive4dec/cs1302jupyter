@@ -1,10 +1,9 @@
-#!/usr/bin/python
-import sys
+#!/opt/conda/bin/python3.10
 import nbformat as nbf
+import glob
 
 if __name__ == '__main__':
-    for i in range(1, len(sys.argv)):
-        fn = sys.argv[i]
+    for fn in glob.glob("_output/files/*.ipynb"):
         nb = nbf.read(fn, 4)
         nb['metadata']['kernelspec'] = {
             "name": "xeus-python",

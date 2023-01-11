@@ -7,7 +7,8 @@ USER ${NB_UID}
 RUN pip install --quiet --no-cache-dir \
     'divewidgets' \
     'divemathjax3' \
-    'divemarkdownit' \
+    # 'divemarkdownit' \
+    'jupyterlab-myst' \
     'otter-grader' \
     'jupyterlab-deck' \
     && \
