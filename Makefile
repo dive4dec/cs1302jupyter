@@ -62,8 +62,7 @@ manim:
 
 image.%:
 	cd $* && \
-	docker build --pull \
-		-t "$*" .
+	docker build -t "$*" .
 
 
 # manim dev cds;
@@ -147,4 +146,4 @@ clean-env:
 
 modules := env clean-env show jobe cs1302nb cs1302hub main scipy-10 programming jupyter-interface push manim jl jl-clean jl-build jl-page release
 
-.PHONY: $(modules) jupyter-interface programming squash math alpinenb test.% push.% image.%
+.PHONY: $(modules) jupyter-interface programming squash math test.% push.% image.%

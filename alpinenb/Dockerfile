@@ -155,6 +155,10 @@ RUN for ext in \
         code-server --install-extension "$ext"; \
     done
 
+RUN git clone https://github.com/dive4dec/nbgrader.git && \
+    cd nbgrader && pip --quiet --no-cache-dir install . && \
+    fix-permissions "${CONDA_DIR}"
+
 # For cs1302
 RUN mamba install --quiet --yes \
     'manim=0.17.*' \
@@ -165,16 +169,12 @@ RUN mamba install --quiet --yes \
     pip install --quiet --no-cache-dir \
     'divewidgets' \
     'jupyterlab-myst==2.0.*' \
-    'jupyterlab-deck==0.1.*' \
     'divemathjax3' \
     && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
 
-RUN git clone https://github.com/dive4dec/nbgrader.git && \
-    cd nbgrader && pip --quiet --no-cache-dir install . && \
-    fix-permissions "${CONDA_DIR}"
-
+# Nbgrader configuration
 RUN mkdir -p ${CONDA_DIR}/srv/exchange && chmod ugo+rw $_
 
 RUN jupyter server extension disable --sys-prefix nbgrader.server_extensions.formgrader && \
