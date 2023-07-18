@@ -105,20 +105,6 @@ cs1302ihub:
 	docker build --pull \
 		-t "cs1302ihub" -f Dockerfile .
 
-scipy-10:
-	docker build \
-		--build-arg PYTHON_VERSION="3.10" \
-		-t "docker-stacks-foundation" docker-stacks/docker-stacks-foundation
-	docker build \
-		--build-arg PYTHON_VERSION="3.10" \
-		-t "base-notebook-10" docker-stacks/base-notebook
-	docker build \
-		--build-arg BASE_CONTAINER="base-notebook-10" \
-		-t "minimal-notebook-10" docker-stacks/minimal-notebook
-	docker build \
-		--build-arg BASE_CONTAINER="minimal-notebook-10" \
-		-t "scipy-10" docker-stacks/scipy-notebook
-
 jl-source: jl-clean-source jl-build-source
 
 jl-release: jl-clean-release jl-build-release jl-page
