@@ -11,6 +11,7 @@ RUN pip install --quiet --no-cache-dir \
     'jupyterlab-myst' \
     'otter-grader' \
     'jupyterlab-deck' \
+    'optlite' \
     && \
     fix-permissions "${CONDA_DIR}"
 

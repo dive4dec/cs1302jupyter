@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER=jupyter/scipy-notebook
+ARG BASE_CONTAINER=jupyter/minimal-notebook
 
 FROM ${BASE_CONTAINER}
 
@@ -11,8 +11,8 @@ RUN apt-get update --yes && \
     build-essential \
     # java
     # default-jdk \
-    openjdk-17-jdk \
-    openjdk-17-jre \
+    openjdk-19-jdk \
+    openjdk-19-jre \
     # python
     thonny \
     # python3-dev \
@@ -23,6 +23,8 @@ RUN apt-get update --yes && \
     fpc-source \
     # SQL
     sqlite3 \
+    # itikz
+    pdf2svg \
     && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -35,23 +37,16 @@ RUN npm \
     tslab install --sys-prefix \
     && \
     mamba install --quiet --yes \
-    'graphviz=2.50.*' \
-    'xeus-python=0.13.*' \
+    'pandas=2.0.*' \
+    'matplotlib-base=3.7.*' \
+    'graphviz=8.1.*' \
+    # 'xeus-python' \
     # C, C++
-    'xeus-cling=0.13.*' \
-    # SQL
-    'xeus-sql=0.1.*' \
-    'soci-sqlite=4.0.*' \
-    'xwidgets=0.26.*' \
+    'xeus-cling=0.15.*' \
     # LaTeX
-    'tectonic=0.9.*' \
-    'texlab=4.2.*' \
+    'tectonic=0.14.*' \
+    'texlab=5.7.*' \
     'chktex=1.7.*' \
-    # Formatters and Servers
-    'black=22.*' \
-    'jupyterlab_code_formatter=1.4.*' \
-    'jupyterlab-lsp=3.10.*' \
-    'python-lsp-server=1.4.*' \
     && \
     npm install -g \
     bash-language-server \
@@ -63,7 +58,6 @@ RUN npm \
     yaml-language-server \
     && \
     pip install --quiet --no-cache-dir \
-    'jupyterlab_sublime==0.4.*' \
     'itikz==0.1.*' \
     && \
     mamba clean --all -f -y && \

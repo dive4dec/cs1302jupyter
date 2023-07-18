@@ -1,43 +1,75 @@
 SHELL:= /bin/bash
-activate_conda = source /opt/conda/bin/activate && conda activate jlite
+
+# JupyterLite
+jl_folder = jupyterlite
+jl_env_file = $(jl_folder)/dep/environment.yml
+jl_env_name = jl$(word 1, $(shell md5sum $(jl_env_file)))
+activate_conda = source /opt/conda/bin/activate && conda activate $(jl_env_name)
 # Registry for docker images
 REGISTRY=localhost:32000
 # REGISTRY=chungc
 # version for tagging image for deployment
 VERSION=0.0.2b
 
-push-%:
+python_version=3.11.4
+
+base = minimal-notebook
+
+docker-stacks-foundation:
+	docker build \
+		--build-arg PYTHON_VERSION="$(python_version)" \
+		-t "docker-stacks-foundation" docker-stacks/docker-stacks-foundation
+
+base-notebook: docker-stacks-foundation
+	docker build \
+		--build-arg BASE_CONTAINER="docker-stacks-foundation" \
+		-t "base-notebook" docker-stacks/base-notebook
+
+minimal-notebook: base-notebook
+	docker build \
+		--build-arg BASE_CONTAINER="base-notebook" \
+		-t "minimal-notebook" docker-stacks/minimal-notebook
+
+scipy-notebook: minimal-notebook
+	docker build \
+		--build-arg BASE_CONTAINER="minimal-notebook" \
+		-t "scipy-notebook" docker-stacks/scipy-notebook
+
+push.%:
 	docker tag "$*" "${REGISTRY}/$*:${VERSION}"
 	docker push "${REGISTRY}/$*:${VERSION}"
 
-# Support different programming languages in addition to python such as
-# C++, Java, SQL, javascript, typescript, ...
+# Programming languages and language servers
 programming:
 	docker build \
 		-t "programming" -f programming/Dockerfile .
-	docker run --rm -it  -p 8888:8888/tcp -v "$$(pwd)/programming/examples":/home/jovyan/work programming
+	docker run --rm -it  -p 8999:8888/tcp programming start-notebook.sh --NotebookApp.token=''
 
-# Support different interfaces such as
-# VSCode, remote desktop, retrolab, ...
+# Development environments
 jupyter-interface:
 	docker build --pull \
 		-t "jupyter-interface" -f jupyter-interface/Dockerfile .
-	docker run --rm -it  -p 8888:8888/tcp -v "$$(pwd)/jupyter-interface/examples":/home/jovyan/work jupyter-interface
 
-# Tools for mathematics
+# Mathematical engines
 math:
 	docker build --pull \
 		-t "math" -f math/Dockerfile .
-	docker run --rm -it  -p 8888:8888/tcp math
 
+# Mathematical animations
 manim:
 	docker build --pull \
 		-t "manim" -f manim/Dockerfile .
-	docker run --rm -it  -p 8888:8888/tcp manim
 
-cs1302nb: scipy-10
-	base=scipy-10; i=0; \
-	for module in jupyter-interface programming manim dev cds; \
+image.%:
+	cd $* && \
+	docker build --pull \
+		-t "$*" .
+
+
+# manim dev cds;
+cs1302nb: $(base)
+	base=$(base); i=0; \
+	for module in jupyter-interface programming ; \
 	do \
 	stage="cs1302nb$$((++i))_$$module"; \
 	docker build --build-arg BASE_CONTAINER="$$base" \
@@ -45,7 +77,11 @@ cs1302nb: scipy-10
 	base="$$stage"; \
 	done; \
 	docker tag "$$stage" cs1302nb
-	docker run --rm -it  -p 8888:8888/tcp cs1302nb
+
+
+
+test.%:
+	docker run --rm -it  -p 8888:8888/tcp $* start-notebook.sh --NotebookApp.token=''
 
 jobe: scipy-10
 	base=scipy-10; i=0; \
@@ -88,23 +124,21 @@ jl-source: jl-clean-source jl-build-source
 jl-release: jl-clean-release jl-build-release jl-page
 
 jl-clean-release:
-	rm -rf _release .jupyterlite.doit.db
+	rm -rf _release "$(jl_folder)/.jupyterlite.doit.db"
     
 jl-clean-source:
-	rm -rf _source .jupyterlite.doit.db
+	rm -rf _source "$(jl_folder)/.jupyterlite.doit.db"
 
 jl-build-release:
-	# run jlite twice to get wtc setup
-	cd jupyterlite && \
+	cd $(jl_folder) && \
 	$(activate_conda) && \
-	jupyter lite build --contents=../release && \
 	jupyter lite build --contents=../release && \
 	python kernel2xeus_python.py && \
 	python kernel2pyodide.py && \
 	cp -rf _output ../_release
 
 jl-build-source:
-	cd jupyterlite && \
+	cd $(jl_folder) && \
 	$(activate_conda) && \
 	jupyter lite build --contents=../source && \
 	python kernel2xeus_python.py && \
@@ -116,7 +150,15 @@ jl-page:
 	$(activate_conda) && \
 	ghp-import -np ../_release
 
+env:
+	conda env create -p ${CONDA_DIR}/envs/$(jl_env_name) -f $(jl_env_file)
 
-modules := jobe cs1302nb cs1302hub main scipy-10 programming jupyter-interface push manim jl jl-clean jl-build jl-page release
+show:
+	echo $(jl_env_name)
 
-.PHONY: $(modules)
+clean-env:
+	conda remove -n $(jl_env_name) --all
+
+modules := env clean-env show jobe cs1302nb cs1302hub main scipy-10 programming jupyter-interface push manim jl jl-clean jl-build jl-page release
+
+.PHONY: $(modules) jupyter-interface programming squash math alpinenb test.% push.% image.%

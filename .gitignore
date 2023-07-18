@@ -3,6 +3,7 @@ python_data.*
 .jupyterlite.doit.db
 _output
 _old
+_release
 
 
 # Byte-compiled / optimized / DLL files
