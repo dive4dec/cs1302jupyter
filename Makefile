@@ -80,7 +80,7 @@ cs1302nb: $(base)
 
 
 test.%:
-	docker run --rm -it  -p 8888:8888/tcp $* start-notebook.sh --NotebookApp.token=''
+	docker run -it  -p 8888:8888/tcp $* start-notebook.sh --NotebookApp.token=''
 
 jobe: scipy-10
 	base=scipy-10; i=0; \

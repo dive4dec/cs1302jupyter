@@ -155,10 +155,6 @@ RUN for ext in \
         code-server --install-extension "$ext"; \
     done
 
-RUN git clone https://github.com/dive4dec/nbgrader.git && \
-    cd nbgrader && pip --quiet --no-cache-dir install . && \
-    fix-permissions "${CONDA_DIR}"
-
 # For cs1302
 RUN mamba install --quiet --yes \
     'manim=0.17.*' \
@@ -174,14 +170,14 @@ RUN mamba install --quiet --yes \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
 
-# Nbgrader configuration
+# Nbgrader
+RUN pip install --quiet --no-cache-dir \
+    'nbgrader>=v0.9.0a0' && \
+    fix-permissions "${CONDA_DIR}"
+
 RUN mkdir -p ${CONDA_DIR}/srv/exchange && chmod ugo+rw $_
 
-RUN jupyter server extension disable --sys-prefix nbgrader.server_extensions.formgrader && \
-    jupyter server extension disable --sys-prefix nbgrader.server_extensions.course_list && \
-    jupyter labextension disable --level=sys_prefix nbgrader/formgrader && \
-    jupyter labextension disable --level=sys_prefix nbgrader/create-assignment && \
-    jupyter labextension disable --level=sys_prefix nbgrader/course-list
+RUN jupyter server extension disable --sys-prefix nbgrader.server_extensions.formgrader
 
 COPY --chown=${NB_USER}:${NB_GID} nbgrader_config.py ${CONDA_DIR}/etc/jupyter/nbgrader_config.py
 
@@ -212,3 +208,7 @@ HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
 
 ENV JUPYTER_PORT=8888
 EXPOSE $JUPYTER_PORT
+
+
+# FROM base as test
+
