@@ -13,40 +13,39 @@ VERSION=0.0.2b
 
 python_version=3.11.4
 
-base = minimal-notebook
+base = base-notebook
+
+docker-stacks-build = cd docker-stacks && docker build "$@" -t "$@"
+
+port ?= 8888
 
 docker-stacks-foundation:
-	docker build \
+	$(docker-stacks-build) \
 		--build-arg PYTHON_VERSION="$(python_version)" \
-		-t "docker-stacks-foundation" docker-stacks/docker-stacks-foundation
-
+		
 base-notebook: docker-stacks-foundation
-	docker build \
+	$(docker-stacks-build) \
 		--build-arg BASE_CONTAINER="docker-stacks-foundation" \
-		-t "base-notebook" docker-stacks/base-notebook
 
 minimal-notebook: base-notebook
-	docker build \
-		--build-arg BASE_CONTAINER="base-notebook" \
-		-t "minimal-notebook" docker-stacks/minimal-notebook
+	$(docker-stacks-build) \
+		--build-arg BASE_CONTAINER="base-notebook"
 
 scipy-notebook: minimal-notebook
-	docker build \
-		--build-arg BASE_CONTAINER="minimal-notebook" \
-		-t "scipy-notebook" docker-stacks/scipy-notebook
+	$(docker-stacks-build) \
+		--build-arg BASE_CONTAINER="minimal-notebook"
 
 push.%:
 	docker tag "$*" "${REGISTRY}/$*:${VERSION}"
 	docker push "${REGISTRY}/$*:${VERSION}"
 
 # Programming languages and language servers
-programming:
+programming: jupyter-interface
 	docker build \
 		-t "programming" -f programming/Dockerfile .
-	docker run --rm -it  -p 8999:8888/tcp programming start-notebook.sh --NotebookApp.token=''
 
 # Development environments
-jupyter-interface:
+jupyter-interface: base-notebook
 	docker build --pull \
 		-t "jupyter-interface" -f jupyter-interface/Dockerfile .
 
@@ -77,10 +76,8 @@ cs1302nb: $(base)
 	done; \
 	docker tag "$$stage" cs1302nb
 
-
-
 test.%:
-	docker run -it  -p 8888:8888/tcp $* start-notebook.sh --NotebookApp.token=''
+	docker run -it -p $(port):8888/tcp $* start-notebook.sh --NotebookApp.token=''
 
 jobe: scipy-10
 	base=scipy-10; i=0; \

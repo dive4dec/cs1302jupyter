@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# need to restart servers
+jupyter server extension enable --user nbgrader.server_extensions.formgrader

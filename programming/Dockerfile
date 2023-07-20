@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER=jupyter/minimal-notebook
+ARG BASE_CONTAINER=jupyter-interface
 
 FROM ${BASE_CONTAINER}
 
@@ -9,16 +9,10 @@ RUN apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
     # C, C++
     build-essential \
-    # java
-    # default-jdk \
-    openjdk-19-jdk \
-    openjdk-19-jre \
+    unzip \
     # python
     thonny \
     # python3-dev \
-    # pascal
-    fp-compiler \
-    lazarus \
     gdb \
     fpc-source \
     # SQL
@@ -47,6 +41,8 @@ RUN npm \
     'tectonic=0.14.*' \
     'texlab=5.7.*' \
     'chktex=1.7.*' \
+    # Java
+    'openjdk=20.0.*' \
     && \
     npm install -g \
     bash-language-server \
@@ -68,3 +64,38 @@ RUN npm \
     unzip /tmp/ijava.zip -d /tmp/ijava && \
     python /tmp/ijava/install.py --sys-prefix && \
     rm -rf /tmp/ijava
+
+# For cs1302
+RUN mamba install --quiet --yes \
+    'manim=0.17.*' \
+    'pandas=2.0.*' \
+    'matplotlib-base=3.7.*' \
+    'sympy=1.*' \
+    && \
+    pip install --quiet --no-cache-dir \
+    'divewidgets' \
+    'jupyterlab-myst==2.0.*' \
+    'divemathjax3' \
+    && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}"
+
+# Nbgrader
+RUN pip install --quiet --no-cache-dir \
+    'nbgrader>=v0.9.0a0' && \
+    fix-permissions "${CONDA_DIR}"
+
+RUN pip install --quiet --no-cache-dir \
+    'jupyterlab_theme_solarized_dark' \
+    'jupyterlab-night' \
+    'jupyterlab_theme_solarized_dark' \
+    'theme-darcula' && \
+    fix-permissions "${CONDA_DIR}"
+
+
+RUN mkdir -p ${CONDA_DIR}/srv/exchange && chmod ugo+rw $_
+
+RUN jupyter server extension disable --sys-prefix nbgrader.server_extensions.formgrader
+
+COPY --chown=${NB_USER}:${NB_GID} nbgrader_config.py ${CONDA_DIR}/etc/jupyter/nbgrader_config.py
+

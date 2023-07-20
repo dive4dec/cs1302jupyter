@@ -175,6 +175,13 @@ RUN pip install --quiet --no-cache-dir \
     'nbgrader>=v0.9.0a0' && \
     fix-permissions "${CONDA_DIR}"
 
+RUN pip install --quiet --no-cache-dir \
+    'jupyterlab_theme_solarized_dark' \
+    'jupyterlab-night' \
+    'jupyterlab_theme_solarized_dark' \
+    'theme-darcula' && \
+    fix-permissions "${CONDA_DIR}"
+
 RUN mkdir -p ${CONDA_DIR}/srv/exchange && chmod ugo+rw $_
 
 RUN jupyter server extension disable --sys-prefix nbgrader.server_extensions.formgrader
@@ -211,4 +218,9 @@ EXPOSE $JUPYTER_PORT
 
 
 # FROM base as test
+
+# RUN pip install --quiet --no-cache-dir \
+#     'jupyterlab_rise' \
+#     'rise' && \
+#     fix-permissions "${CONDA_DIR}"
 
