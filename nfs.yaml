@@ -1,0 +1,16 @@
+replicaCount: 1
+
+storageClass:
+  name: home-dive0-nfs
+  allowVolumeExpansion: false
+  provisionerName: k8s-sigs.io/home-dive0-nfs-subdir-external-provisioner
+  archiveOnDelete: false
+  onDelete: retain
+  pathPattern: ${.PVC.name}${.PVC.annotations.nfs.io/storage-path}
+
+nfs:
+  server: 10.12.2.54
+  path: /export/home
+  mountOptions:
+    - hard
+    - nfsvers=4.2

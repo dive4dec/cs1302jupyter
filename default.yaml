@@ -1,0 +1,160 @@
+proxy:
+ service:
+   type: ClusterIP
+
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 200M
+  hosts:
+    - dive.cs.cityu.edu.hk
+  pathType: Prefix 
+
+hub:
+  baseUrl: /cs1302_23a
+  containerSecurityContext:
+    allowPrivilegeEscalation: true
+  nodeSelector:
+    kubernetes.io/hostname: dive
+  image:
+    name: localhost:32000/cs1302hub
+    pullPolicy: Always
+    tag: 0.1.0b
+  config:
+    Authenticator:
+      admin_users:
+        - ruoqitang2
+        - ccha23
+    JupyterHub:
+      admin_access: true
+      authenticator_class: pam
+  extraConfig:
+    01-custom-attr: |
+      import subprocess
+      from tornado import gen
+      from shlex import quote
+      from jupyterhub.auth import PAMAuthenticator
+
+      try:
+        import pamela
+      except Exception as e:
+        pamela = None
+        _pamela_error = e
+
+      class p(PAMAuthenticator):
+        @gen.coroutine
+
+        def system_user_exists(self, user):
+          cmd = 'getent passwd {}'.format(quote(user.name))
+          try:
+            subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+          except subprocess.CalledProcessError as e:
+            return False
+          else:
+            return True
+
+        def pre_spawn_start(self, user, spawner):
+          uid = subprocess.check_output(["id", "-u", user.name]).decode("utf-8").strip()
+          gid = subprocess.check_output(["id", "-g", user.name]).decode("utf-8").strip()
+          cmd = 'getent passwd {} | cut -d: -f6'.format(quote(user.name))
+          userdir = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+
+          # cmd = 'sudo mkhomedir_helper {}'.format(quote(user.name))
+          # try:
+          #   subprocess.check_output(cmd, shell=True)
+          # except subprocess.CalledProcessError as e:
+          #   pass
+
+          # cmd = 'chown -hR {}:{} {}'.format(uid, gid, userdir)
+          # try:
+          #   subprocess.check_output(cmd, shell=True)
+          # except subprocess.CalledProcessError as e:
+          #   pass
+
+          # spawner.environment['NB_UID'] = str(int(uid))
+          # spawner.environment['NB_GID'] = str(int(gid))
+          spawner.environment['NB_USER'] = user.name
+
+          TA_List = [
+            "ccha23",
+            "ruoqitang2",
+            "qihaliang2",
+            "zimenwang6",
+            "xwang837"
+          ]
+
+          if user.name in TA_List:
+            spawner.environment['NB_GID'] = "233"
+
+          # spawner.volumes = [
+          #   {
+          #     'name': 'exchange',
+          #     'hostPath': {
+          #       'path': '/home/courses/cs1302',
+          #       'type': 'Directory'
+          #     }
+          #   }
+          # ])
+          # spawner.volume_mounts.extend([
+          #   {
+          #     'mountPath': '/home/exchange',
+          #     'name': 'exchange'
+          #   }
+          # ])
+
+          if not self.open_sessions:
+            return
+          try:
+            pamela.open_session(user.name, service=self.service, encoding=self.encoding)
+          except pamela.PAMError as e:
+            self.log.warning("Failed to open PAM session for %s: %s", user.name, e)
+            self.log.warning("Disabling PAM sessions from now on.")
+            self.open_sessions = False
+
+      c.JupyterHub.authenticator_class = p
+
+singleuser:
+  uid: 0
+  cmd: start-singleuser.sh
+  image: 
+    name: jupyter/minimal-notebook
+    tag: latest
+  storage:
+    capacity: 10Gi
+    homeMountPath: /home/{username}
+    dynamic:
+      pvcNameTemplate: claim-{username}
+      storageClass: home-dive0-nfs
+    extraVolumes:
+      - name: exchange
+        persistentVolumeClaim:
+          claimName: exchange-cs1302
+    extraVolumeMounts:
+      - mountPath: "/opt/conda/srv/exchange"
+        name: exchange
+  extraEnv:
+    CHOWN_HOME: "yes"
+  memory:
+    limit: 4G
+    guarantee: 2G
+  cpu:
+    limit: 4
+    guarantee: 0.1
+  networkPolicy:
+    egressAllowRules:
+      privateIPs: true
+  extraPodConfig:
+    hostIPC: true
+  profileList:
+  - default: true
+    display_name: Default
+    description: |
+      Default jupyter server run on Ubuntu.
+    kubespawner_override:
+      image: localhost:32000/cs1302nb:0.1.0b
+  - display_name: Alpine
+    description: |
+      Lightweight jupyter server run on Alpine Linux. It may run faster but has less features.
+    kubespawner_override:
+      image: localhost:32000/cs1302anb:0.1.0b
+

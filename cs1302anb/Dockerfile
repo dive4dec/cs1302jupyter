@@ -21,7 +21,7 @@ ENV TZ="Hongkong" \
 # Copy a script that we will use to correct permissions after running certain commands
 COPY fix-permissions /usr/local/bin/fix-permissions
 
-RUN apk add --no-cache bash bash-completion linux-pam \
+RUN apk add --no-cache shadow bash bash-completion linux-pam \
     # - bzip2 is necessary to extract the micromamba executable.
     bzip2 \
     ca-certificates \
@@ -206,6 +206,16 @@ RUN pip install --quiet --no-cache-dir \
 # Disable news and update
 # See https://jupyterlab.readthedocs.io/en/stable/user/announcements.html
 RUN jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
+
+# MyST Markdown CLI
+RUN npm install -g mystmd
+
+# Collaboration
+RUN mamba install --quiet --yes \
+    'jupyter-collaboration=1.1.*' \
+    && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}"
 
 # ----------------------------------------------------------
 # Cleanup

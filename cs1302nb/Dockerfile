@@ -185,8 +185,8 @@ RUN apt-get update --yes && \
 WORKDIR /tmp
 RUN mamba install --yes \
     'notebook==7.0.*' \
-    'jupyterhub==4.0.*' \
     'jupyterlab==4.0.*' \
+    'jupyterhub==4.0.*' \
     && \
     jupyter notebook --generate-config && \
     # mamba clean --all -f -y && \
@@ -343,6 +343,16 @@ RUN pip install --quiet --no-cache-dir \
 # Disable news and update
 # See https://jupyterlab.readthedocs.io/en/stable/user/announcements.html
 RUN jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
+
+# MyST Markdown CLI
+RUN npm install -g mystmd
+
+# Collaboration
+RUN mamba install --quiet --yes \
+    'jupyter-collaboration=1.1.*' \
+    && \
+    # mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}"
 
 # ----------------------------------------------------------
 # Cleanup

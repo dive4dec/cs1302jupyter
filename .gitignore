@@ -1,10 +1,8 @@
 gradebook.db
 python_data.*
 .jupyterlite.doit.db
-_output
-_old
-_release
-
+/.private/
+/.setup_*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
