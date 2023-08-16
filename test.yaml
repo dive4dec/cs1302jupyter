@@ -31,6 +31,7 @@ hub:
       from jupyterhub.auth import PAMAuthenticator, DummyAuthenticator
 
       class MyAuthenticator(DummyAuthenticator):
+
         # def system_user_exists(self, user):
         #   cmd = 'getent passwd {}'.format(quote(user.name))
         #   try:
@@ -80,6 +81,8 @@ hub:
 
         #   super().pre_spawn_start(user, spawner)
 
+        pass
+
       c.JupyterHub.authenticator_class = MyAuthenticator
     02-collab-group : |
       c.JupyterHub.load_groups = {
@@ -89,8 +92,8 @@ hub:
             "grader-cs1302"
           ],
           "formgrade-cs1302": [
-            _ta1,
-            _ta2,
+            "_ta1",
+            "_ta2",
           ]
       }
 
