@@ -398,5 +398,18 @@ USER ${NB_UID}
 
 WORKDIR "${HOME}"
 
+# ----------------------------------------------------------
 
+FROM prod as hub
+
+USER root
+
+ENV NBGRADER_UID=2000 \
+    NBGRADER_USER=nbgrader
+
+# Create NBGRADER_USER with name nbgrader, UID=2000 and in the 'users' group
+# On jupyterhub, this user should be the owner of the course root and exchange folder for nbgrader.
+RUN useradd -l -M -s /bin/bash -N -u "${NBGRADER_UID}" "${NBGRADER_USER}"
+
+USER ${NB_USER}
 

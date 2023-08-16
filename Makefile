@@ -2,7 +2,7 @@ SHELL=/bin/bash
 
 # Customizations:
 # Version for tagging docker images
-VERSION=0.1.0b
+VERSION=0.1.0c
 
 # Application name:
 #   - Used to define part of the helm release name, e.g., in the make command helm-upgrade.%.

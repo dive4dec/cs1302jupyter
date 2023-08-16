@@ -253,11 +253,17 @@ HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
 ENV JUPYTER_PORT=8888
 EXPOSE $JUPYTER_PORT
 
+# ----------------------------------------------------------
 
-# FROM base as test
+FROM prod as hub
 
-# RUN pip install --quiet --no-cache-dir \
-#     'jupyterlab_rise' \
-#     'rise' && \
-#     fix-permissions "${CONDA_DIR}"
+USER root
 
+ENV NBGRADER_UID=2000 \
+    NBGRADER_USER=nbgrader
+
+# Create NBGRADER_USER with name nbgrader, UID=2000 and in the 'users' group
+# This user should be the owner of the course root and exchange folder for nbgrader.
+RUN adduser -D --no-create-home -s /bin/bash -G users -u "${NBGRADER_UID}" "${NBGRADER_USER}"
+
+USER ${NB_USER}
