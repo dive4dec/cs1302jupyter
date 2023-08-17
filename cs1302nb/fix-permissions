@@ -31,5 +31,5 @@ for d in "$@"; do
             -type d \
             -a ! -perm -6000 \
         \) \
-        -exec chmod +6000 -- {} \+
+        -exec chmod ug+s -- {} \+
 done

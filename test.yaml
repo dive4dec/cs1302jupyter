@@ -16,7 +16,7 @@ hub:
   #   kubernetes.io/hostname: dive
   image:
     name: localhost:32000/cs1302hub
-    tag: 0.1.0d
+    tag: 0.1.0e
   config:
     Authenticator:
       admin_users:
@@ -213,12 +213,12 @@ singleuser:
       description: |
         Default jupyter server run on Ubuntu.
       kubespawner_override:
-        image: localhost:32000/cs1302nb:0.1.0d
+        image: localhost:32000/cs1302nb:0.1.0e
     - display_name: Alpine
       description: |
         Lightweight jupyter server run on Alpine Linux. It may run faster but has less features.
       kubespawner_override:
-        image: localhost:32000/cs1302anb:0.1.0d
+        image: localhost:32000/cs1302nb.alpine:0.1.0e
     # - display_name: nbg
     #   description: |
     #     For running notebooks with GPU.   

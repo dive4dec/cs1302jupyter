@@ -2,7 +2,7 @@ SHELL=/bin/bash
 
 # Customizations:
 # Version for tagging docker images
-VERSION=0.1.0d
+VERSION=0.1.0e
 
 # Application name:
 #   - Used to define part of the helm release name, e.g., in the make command helm-upgrade.%.
@@ -45,7 +45,7 @@ setup: .setup_nfs .setup_hub
 	touch $@
 
 # Deploy a jupyterhub instance
-hub.%: image.cs1302hub image.cs1302nb image.cs1302anb helm-upgrade.%
+hub.%: image.cs1302hub image.cs1302nb image.cs1302nb.alpine helm-upgrade.%
 	@echo "Deploying $*..."
 
 # Cleaning the default jupyterhub instance.
@@ -62,9 +62,20 @@ image.%: docker-build.% docker-push.%
 	@echo "Making docker image $*..."
 
 # Build a docker image
+# E.g., the make command 
+#   make docker-build.{{subdir}}.{{dockerfile_suffix}}.{{build_target}}
+# will run
+# 	cd {{subdir}} && docker build . -t {{subdir}}.{{dockerfile_suffix}}.{{build_target}} -f Dockerfile.{{dockerfile_suffix}} --target {{build_target}}
+define docker-build
+cd $(1) && \
+docker build . \
+-t $(1)$(2)$(3) \
+$(foreach v,$(subst .,,$(2)),$(if $(v),-f Dockerfile.$(v))) \
+$(foreach v,$(subst .,,$(3)),$(if $(v),--target $(v)))
+endef
+
 docker-build.%:
-	cd $* && \
-	docker build -t "$*" .
+	$(call docker-build,$(word 1, $(subst ., .,$*)),$(word 2, $(subst ., .,$*)),$(word 3, $(subst ., .,$*)))
 
 # Push a docker image to a registry
 docker-push.%:
