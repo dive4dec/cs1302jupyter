@@ -12,11 +12,11 @@ ingress:
 
 hub:
   baseUrl: /cs1302_23a
-  nodeSelector:
-    kubernetes.io/hostname: dive
+  # nodeSelector:
+  #   kubernetes.io/hostname: dive
   image:
     name: localhost:32000/cs1302hub
-    tag: 0.1.0c
+    tag: 0.1.0d
   config:
     Authenticator:
       admin_users:
@@ -85,6 +85,9 @@ hub:
 
       c.JupyterHub.authenticator_class = MyAuthenticator
     02-collab-group : |
+      # from kubernetes_asyncio.client.rest import ApiException
+      # import asyncio
+
       c.JupyterHub.load_groups = {
           # collaborative accounts get added to this group
           # so it's easy to see which accounts are collaboration accounts
@@ -110,12 +113,63 @@ hub:
         },
       ]
 
+      # def pvc_exists(spawner, pvc):
+      #   async def _():
+      #     try:
+      #         self.log.info(
+      #             f"Attempting to find pvc {pvc}, with timeout {spawner.k8s_api_request_timeout}"
+      #         )
+      #         await asyncio.wait_for(
+      #             spawner.api.read_namespaced_persistent_volume_claim(
+      #               name=pvc,
+      #               namespace=spawner.namespace
+      #             ),
+      #             spawner.k8s_api_request_timeout,
+      #         )
+      #         return True
+      #     except asyncio.TimeoutError:
+      #         return False
+      #     except ApiException as e:
+      #         spawner.log.info(f"PVC error status: {e.status}")
+      #         # if e.status == 404:
+      #         return False
+      #   loop = asyncio.get_event_loop()
+      #   return loop.run_until_complete(_())
+
       def pre_spawn_hook(spawner):
         group_names = {group.name for group in spawner.user.groups}
         if "collaborative" in group_names:
           spawner.log.info(f"Enabling RTC for user {spawner.user.name}")
           spawner.uid = 2000
           spawner.gid = 100
+
+        exchange = {
+          'name': 'volume-grader-2dcs1302',
+          'persistentVolumeClaim': {
+            'claimName': 'claim-grader-2dcs1302'
+          },
+          'mountPath': '/opt/conda/srv/exchange',
+          'subPath': 'exchange'
+        }
+
+        # spawner.log.info(f"********* exchange PVC ***************")
+        # if pvc_exists(spawner, exchange['persistentVolumeClaim'], ) and False:
+
+        if spawner.user.name != "grader-cs1302":
+          spawner.volumes.extend([
+            {
+              'name': exchange['name'],
+              'persistentVolumeClaim': exchange['persistentVolumeClaim']
+            }         
+          ])
+        
+        spawner.volume_mounts.extend([
+          {
+            'name': exchange['name'],
+            'mountPath': exchange['mountPath'],
+            'subPath': exchange['subPath']
+          }        
+        ])
 
       c.Spawner.pre_spawn_hook = pre_spawn_hook
 
@@ -130,14 +184,16 @@ singleuser:
     homeMountPath: /home/jovyan
     dynamic:
       pvcNameTemplate: claim-{username}
+      volumeNameTemplate: volume-{username}      
       storageClass: home-dive0-nfs
-    extraVolumes:
-      - name: exchange
-        persistentVolumeClaim:
-          claimName: exchange-cs1302
-    extraVolumeMounts:
-      - mountPath: "/opt/conda/srv/exchange"
-        name: exchange
+    # extraVolumes:
+    #   - name: volume-grader-2dcs1302
+    #     persistentVolumeClaim:
+    #       claimName: claim-grader-2dcs1302
+    # extraVolumeMounts:
+    #   - mountPath: "/opt/conda/srv/exchange"
+    #     subPath: "exchange"
+    #     name: exchange
   # extraEnv:
   #   CHOWN_HOME: "yes"
   memory:
@@ -157,16 +213,16 @@ singleuser:
       description: |
         Default jupyter server run on Ubuntu.
       kubespawner_override:
-        image: localhost:32000/cs1302nb:0.1.0c
+        image: localhost:32000/cs1302nb:0.1.0d
     - display_name: Alpine
       description: |
         Lightweight jupyter server run on Alpine Linux. It may run faster but has less features.
       kubespawner_override:
-        image: localhost:32000/cs1302anb:0.1.0c
-    - display_name: nbg
-      description: |
-        For running notebooks with GPU.   
-      kubespawner_override:
-        image: localhost:32000/nbg:0.1.1c
-        extra_resource_limits:
-          nvidia.com/gpu-3gb: "1" 
+        image: localhost:32000/cs1302anb:0.1.0d
+    # - display_name: nbg
+    #   description: |
+    #     For running notebooks with GPU.   
+    #   kubespawner_override:
+    #     image: localhost:32000/nbg:0.1.1c
+    #     extra_resource_limits:
+    #       nvidia.com/gpu-3gb: "1" 

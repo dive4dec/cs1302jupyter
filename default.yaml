@@ -16,7 +16,7 @@ hub:
     kubernetes.io/hostname: dive
   image:
     name: localhost:32000/cs1302hub
-    tag: 0.1.0c
+    tag: 0.1.0d
   config:
     Authenticator:
       admin_users:
@@ -73,6 +73,31 @@ hub:
           spawner.uid = 2000
           spawner.gid = 100
 
+        exchange = {
+          'name': 'volume-grader-2dcs1302',
+          'persistentVolumeClaim': {
+            'claimName': 'claim-grader-2dcs1302'
+          },
+          'mountPath': '/opt/conda/srv/exchange',
+          'subPath': 'exchange'
+        }
+
+        if spawner.user.name != "grader-cs1302":
+          spawner.volumes.extend([
+            {
+              'name': exchange['name'],
+              'persistentVolumeClaim': exchange['persistentVolumeClaim']
+            }         
+          ])
+        
+        spawner.volume_mounts.extend([
+          {
+            'name': exchange['name'],
+            'mountPath': exchange['mountPath'],
+            'subPath': exchange['subPath']
+          }        
+        ])
+
       c.Spawner.pre_spawn_hook = pre_spawn_hook
 
 singleuser:
@@ -85,14 +110,8 @@ singleuser:
     homeMountPath: /home/jovyan
     dynamic:
       pvcNameTemplate: claim-{username}
+      volumeNameTemplate: volume-{username}      
       storageClass: home-dive0-nfs
-    extraVolumes:
-      - name: exchange
-        persistentVolumeClaim:
-          claimName: exchange-cs1302
-    extraVolumeMounts:
-      - mountPath: "/opt/conda/srv/exchange"
-        name: exchange
   memory:
     limit: 4G
     guarantee: 2G
@@ -108,10 +127,10 @@ singleuser:
       description: |
         Default jupyter server run on Ubuntu.
       kubespawner_override:
-        image: localhost:32000/cs1302nb:0.1.0c
+        image: localhost:32000/cs1302nb:0.1.0d
     - display_name: Alpine
       description: |
         Lightweight jupyter server run on Alpine Linux. It may run faster but has less features.
       kubespawner_override:
-        image: localhost:32000/cs1302anb:0.1.0c
+        image: localhost:32000/cs1302anb:0.1.0d
 

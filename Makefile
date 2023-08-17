@@ -2,7 +2,7 @@ SHELL=/bin/bash
 
 # Customizations:
 # Version for tagging docker images
-VERSION=0.1.0c
+VERSION=0.1.0d
 
 # Application name:
 #   - Used to define part of the helm release name, e.g., in the make command helm-upgrade.%.
@@ -57,11 +57,6 @@ clean.%:
 	make helm-uninstall.$*
 	kubectl delete namespace jh-$(main)-$*
 
-# Setup for deploying each jupyterhub instance.
-.setup_%: namespace.% exchange.yaml
-	kubectl apply -f exchange.yaml -n jh-$(main)-$* && \
-	touch $@
-
 # Prepare a docker image for all instances
 image.%: docker-build.% docker-push.%
 	@echo "Making docker image $*..."
@@ -92,7 +87,7 @@ namespace.%:
     fi
 
 # Helm upgrade a jupyterhub instance
-helm-upgrade.%: .setup_%
+helm-upgrade.%:
 	@echo "Upgrading/installing jupyterhub with $*.yaml in the Kubernetes cluster..."
 	helm upgrade --cleanup-on-fail -i -n jh-$(main)-$* $(main)-$* jupyterhub/jupyterhub \
 	  --version=$(jupyterhub_chart_version) -f $*.yaml --atomic $(options)
