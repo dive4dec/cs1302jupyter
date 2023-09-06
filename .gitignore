@@ -3,6 +3,7 @@ python_data.*
 .jupyterlite.doit.db
 /.private/
 /.setup_*
+/lti.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

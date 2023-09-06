@@ -23,7 +23,7 @@ port=8888
 #    make image.cs1302nb -e REGISTRY=chungc
 REGISTRY=localhost:32000
 # JupyterHub chart version
-jupyterhub_chart_version=3.0.0-beta.1
+jupyterhub_chart_version=3.0.3
 
 # Deploy the default jupyterhub instance
 all: setup hub.default
@@ -100,7 +100,7 @@ namespace.%:
 # Helm upgrade a jupyterhub instance
 helm-upgrade.%:
 	@echo "Upgrading/installing jupyterhub with $*.yaml in the Kubernetes cluster..."
-	helm upgrade --cleanup-on-fail -i -n jh-$(main)-$* $(main)-$* jupyterhub/jupyterhub \
+	helm upgrade --cleanup-on-fail --create-namespace -i -n jh-$(main)-$* $(main)-$* jupyterhub/jupyterhub \
 	  --version=$(jupyterhub_chart_version) -f $*.yaml --atomic $(options)
 
 # Helm list a jupyterhub instance

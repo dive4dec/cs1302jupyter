@@ -1,4 +1,4 @@
-FROM jupyterhub/k8s-hub:2.0.0
+FROM jupyterhub/k8s-hub:3.0.3
 
 USER root
 
@@ -20,3 +20,5 @@ COPY etc/pam_radius_auth.conf /etc/pam_radius_auth.conf
 COPY etc/pam.d /etc/pam.d
 
 USER jovyan
+
+RUN pip install jupyterhub-ltiauthenticator --no-cache-dir --quiet

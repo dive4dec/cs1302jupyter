@@ -11,7 +11,7 @@ ingress:
   pathType: Prefix 
 
 hub:
-  baseUrl: /cs1302_23a
+  baseUrl: /cs1302_23a_lti
   nodeSelector:
     kubernetes.io/hostname: dive
   image:
@@ -24,24 +24,31 @@ hub:
         - ruoqitang2
     JupyterHub:
       admin_access: true
+      authenticator_class: ltiauthenticator.lti11.auth.LTI11Authenticator
+    LTI11Authenticator:
+      consumers: { "cs1302_23a_lti": {{ secret['LTI_SHARED_SECRET'] }} }
+      uri_scheme: "https"
+      username_key: "custom_canvas_user_login_id"
+      config_icon: "https://dive.cs.cityu.edu.hk/cs1302_23a/hub/logo"
   extraConfig:
-    01-radius-auth: |
-      import subprocess
-      from shlex import quote
-      from jupyterhub.auth import PAMAuthenticator
+    # 01-radius-auth: |
+    #   import subprocess
+    #   from shlex import quote
+    #   from jupyterhub.auth import PAMAuthenticator
 
-      class MyAuthenticator(PAMAuthenticator):
+    #   class MyAuthenticator(PAMAuthenticator):
 
-        def system_user_exists(self, user):
-          cmd = 'getent passwd {}'.format(quote(user.name))
-          try:
-            subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
-          except subprocess.CalledProcessError as e:
-            return False
-          else:
-            return True
+    #     def system_user_exists(self, user):
+    #       cmd = 'getent passwd {}'.format(quote(user.name))
+    #       try:
+    #         subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+    #       except subprocess.CalledProcessError as e:
+    #         return False
+    #       else:
+    #         return True
 
-      c.JupyterHub.authenticator_class = MyAuthenticator
+
+    #   c.JupyterHub.authenticator_class = MyAuthenticator
     02-collab-group : |
       c.JupyterHub.load_groups = {
           # collaborative accounts get added to this group
@@ -121,7 +128,6 @@ cull:
   every: 120
   concurrency: 60
   maxAge: 21600
-
 
 singleuser:
   cmd: start-singleuser.sh
