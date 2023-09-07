@@ -15,8 +15,8 @@ hub:
   nodeSelector:
     kubernetes.io/hostname: dive
   image:
-    name: localhost:32000/cs1302hub
-    tag: 0.1.0e
+    name: localhost:32000/hub
+    tag: 0.0.2a
   config:
     Authenticator:
       admin_users:
@@ -108,12 +108,6 @@ hub:
 
       c.Spawner.pre_spawn_hook = pre_spawn_hook
 
-scheduling:
-  userScheduler:
-    enabled: true
-  podPriority:
-    enabled: true
-
 cull:
   enabled: true
   adminUsers: false
@@ -144,16 +138,26 @@ singleuser:
   networkPolicy:
     egressAllowRules:
       privateIPs: true
+  extraNodeAffinity:
+    preferred:
+    - weight: 1
+      preference:
+        matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - dkw1
+          - dkw2
   profileList:
     - default: true
       display_name: Default
       description: |
         Default jupyter server run on Ubuntu.
       kubespawner_override:
-        image: localhost:32000/cs1302nb:0.1.0e
+        image: localhost:32000/cs1302nb:0.1.1b
     - display_name: Alpine
       description: |
         Lightweight jupyter server run on Alpine Linux. It may run faster but has less features.
       kubespawner_override:
-        image: localhost:32000/cs1302nb.alpine:0.1.0e
+        image: localhost:32000/cs1302nb.alpine:0.1.1b
 

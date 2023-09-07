@@ -259,6 +259,12 @@ RUN \
     # && \
     # apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# JAVA
+RUN \
+    apt-get update --yes && \
+    apt-get install --yes --no-install-recommends \
+    default-jdk default-jre
+
 USER ${NB_USER}
 
 # Programming languages frontends
@@ -274,12 +280,12 @@ RUN npm \
     # 'xeus-python' \
     # C, C++
     'xeus-cling=0.15.*' \
-    # LaTeX
-    'tectonic=0.14.*' \
-    'texlab=5.7.*' \
-    'chktex=1.7.*' \
-    # Java
-    'openjdk=20.0.*' \
+    # # LaTeX
+    # 'tectonic=0.14.*' \
+    # 'texlab=5.7.*' \
+    # 'chktex=1.7.*' \
+    # # Java
+    # 'openjdk=20.0.*' \
     && \
     npm install -g \
     bash-language-server \

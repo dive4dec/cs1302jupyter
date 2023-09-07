@@ -2,7 +2,7 @@ SHELL=/bin/bash
 
 # Customizations:
 # Version for tagging docker images
-VERSION=0.1.0e
+VERSION=0.1.1b
 
 # Application name:
 #   - Used to define part of the helm release name, e.g., in the make command helm-upgrade.%.
@@ -44,8 +44,14 @@ setup: .setup_nfs .setup_hub
 	helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/ --force-update && \
 	touch $@
 
+# Build and push hub and notebook images
+image: image.cs1302hub image.cs1302nb image.cs1302nb.alpine
+
 # Deploy a jupyterhub instance
-hub.%: image.cs1302hub image.cs1302nb image.cs1302nb.alpine helm-upgrade.%
+# NOTE: The necesary hub and notebook images should be built and pushed to the registry beforehand, e.g., with the command
+#       make image
+#    with the VERSION variable set to the desired value.
+hub.%:  helm-upgrade.%
 	@echo "Deploying $*..."
 
 # Cleaning the default jupyterhub instance.
