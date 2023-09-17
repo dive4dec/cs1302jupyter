@@ -2,7 +2,7 @@ SHELL=/bin/bash
 
 # Customizations:
 # Version for tagging docker images
-VERSION=0.1.1b
+VERSION=0.1.2a
 
 # Application name:
 #   - Used to define part of the helm release name, e.g., in the make command helm-upgrade.%.
@@ -45,7 +45,7 @@ setup: .setup_nfs .setup_hub
 	touch $@
 
 # Build and push hub and notebook images
-image: image.cs1302hub image.cs1302nb image.cs1302nb.alpine
+image: image.cs1302hub image.cs1302nb image.cs1302nb__collab image.cs1302nb_alpine
 
 # Deploy a jupyterhub instance
 # NOTE: The necesary hub and notebook images should be built and pushed to the registry beforehand, e.g., with the command
@@ -69,19 +69,19 @@ image.%: docker-build.% docker-push.%
 
 # Build a docker image
 # E.g., the make command 
-#   make docker-build.{{subdir}}.{{dockerfile_suffix}}.{{build_target}}
+#   make docker-build.{{subdir}}_{{dockerfile_suffix}}_{{build_target}}
 # will run
-# 	cd {{subdir}} && docker build . -t {{subdir}}.{{dockerfile_suffix}}.{{build_target}} -f Dockerfile.{{dockerfile_suffix}} --target {{build_target}}
+# 	cd {{subdir}} && docker build . -t {{subdir}}_{{dockerfile_suffix}}_{{build_target}} -f Dockerfile.{{dockerfile_suffix}} --target {{build_target}}
 define docker-build
 cd $(1) && \
 docker build . \
 -t $(1)$(2)$(3) \
-$(foreach v,$(subst .,,$(2)),$(if $(v),-f Dockerfile.$(v))) \
-$(foreach v,$(subst .,,$(3)),$(if $(v),--target $(v)))
+$(foreach v,$(subst _,,$(2)),$(if $(v),-f Dockerfile.$(v))) \
+$(foreach v,$(subst _,,$(3)),$(if $(v),--target $(v)))
 endef
 
 docker-build.%:
-	$(call docker-build,$(word 1, $(subst ., .,$*)),$(word 2, $(subst ., .,$*)),$(word 3, $(subst ., .,$*)))
+	$(call docker-build,$(word 1, $(subst _, _,$*)),$(word 2, $(subst _, _,$*)),$(word 3, $(subst _, _,$*)))
 
 # Push a docker image to a registry
 docker-push.%:
@@ -92,7 +92,7 @@ docker-push.%:
 docker-run.%:
 	docker run -it -p $(port):8888/tcp \
 	  -v $(PWD):/home/jovyan/work \
-	  $* start-notebook.sh --NotebookApp.token=''
+	  $* start-notebook.sh --NotebookApp.token='' --Application.log_level=0
 
 # Create a namespace for a jupyterhub instance
 namespace.%:

@@ -133,12 +133,12 @@ RUN mamba install --quiet --yes \
     'code-server=4.16.*' \
     'websockify=0.11.*' \
     'jupyter-vscode-proxy=0.2' \
-    'jupyterlab-git=0.41.*' \
-    'jupytext=1.14.*' \
+    # 'jupyterlab-git=0.41.*' \
+    'jupytext=1.15.*' \
     'nbgitpuller=1.2.*' \
-    'black=23.3.*' \
+    'black=23.9.*' \
     'jupyterlab_code_formatter=2.2.*' \
-    'python-lsp-server=1.7.*' \
+    'python-lsp-server=1.8.*' \
     && \
     pip install --quiet --no-cache-dir \
     'jupyterlab_filesystem_access==0.5.*' \
@@ -165,6 +165,7 @@ RUN mamba install --quiet --yes \
     'manim=0.17.*' \
     'pandas=2.0.*' \
     'matplotlib-base=3.7.*' \
+    'ipympl=0.9.*' \
     'sympy=1.*' \
     && \
     pip install --quiet --no-cache-dir \
@@ -176,7 +177,7 @@ RUN mamba install --quiet --yes \
 
 # Nbgrader
 RUN pip install --quiet --no-cache-dir \
-    'nbgrader>=v0.9.0a1' && \
+    'nbgrader==0.9.*' && \
     # git+https://github.com/dive4dec/nbgrader.git && \
     fix-permissions "${CONDA_DIR}"
 
@@ -210,12 +211,12 @@ RUN jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 # MyST Markdown CLI
 RUN npm install -g mystmd
 
-# Collaboration
-RUN mamba install --quiet --yes \
-    'jupyter-collaboration=1.1.*' \
-    && \
-    mamba clean --all -f -y && \
-    fix-permissions "${CONDA_DIR}"
+# # Collaboration
+# RUN mamba install --quiet --yes \
+#     'jupyter-collaboration=1.1.*' \
+#     && \
+#     mamba clean --all -f -y && \
+#     fix-permissions "${CONDA_DIR}"
 
 # ----------------------------------------------------------
 # Cleanup
@@ -238,6 +239,14 @@ COPY --from=base /etc/jupyter /etc/jupyter
 
 RUN conda init --system bash
 
+ENV NBGRADER_UID=2000 \
+    NBGRADER_USER=nbgrader
+
+# Create NBGRADER_USER with name nbgrader, UID=2000 and in the 'users' group
+# This user should be the owner of the course root and exchange folder for nbgrader.
+RUN adduser -D --no-create-home -s /bin/bash -G users -u "${NBGRADER_UID}" "${NBGRADER_USER}"
+
+
 USER ${NB_UID}
 WORKDIR ${HOME}
 
@@ -253,17 +262,9 @@ HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=3 \
 ENV JUPYTER_PORT=8888
 EXPOSE $JUPYTER_PORT
 
+
 # ----------------------------------------------------------
 
-FROM prod as hub
-
-USER root
-
-ENV NBGRADER_UID=2000 \
-    NBGRADER_USER=nbgrader
-
-# Create NBGRADER_USER with name nbgrader, UID=2000 and in the 'users' group
-# This user should be the owner of the course root and exchange folder for nbgrader.
-RUN adduser -D --no-create-home -s /bin/bash -G users -u "${NBGRADER_UID}" "${NBGRADER_USER}"
+FROM prod as default
 
 USER ${NB_USER}

@@ -42,33 +42,48 @@ hub:
             return True
 
       c.JupyterHub.authenticator_class = MyAuthenticator
-    02-collab-group : |
+    02-collab-group: |
       c.JupyterHub.load_groups = {
           # collaborative accounts get added to this group
           # so it's easy to see which accounts are collaboration accounts
           "collaborative": [
-            "grader-cs1302"
+            "grader-cs1302",
+            "all-cs1302"
+          ],
+          "grader": [
+            "grader-cs1302",
           ],
           "formgrade-cs1302": []
       }
 
       c.JupyterHub.load_roles = [
         {
-            "name": f"access-grader-cs1302",
-            "scopes": [
-                f"access:servers!user=grader-cs1302",
-                f"admin:servers!user=grader-cs1302",
-                "admin-ui",
-                f"list:users!user=grader-cs1302",
-            ],
-            "groups": ["formgrade-cs1302"],
+          "name": "access-grader-cs1302",
+          "scopes": [
+              "access:servers!user=grader-cs1302",
+              "admin:servers!user=grader-cs1302",
+              "admin-ui",
+              "list:users!user=grader-cs1302",
+              "access:servers!user=all-cs1302",
+              "admin:servers!user=all-cs1302",
+              "list:users!user=all-cs1302",              
+          ],
+          "groups": ["formgrade-cs1302"],
         },
+        {
+          "name": "user",
+          "scopes": [
+              "self",
+              "servers!user=all-cs1302",
+          ],
+        }        
       ]
 
       def pre_spawn_hook(spawner):
         group_names = {group.name for group in spawner.user.groups}
-        if "collaborative" in group_names:
-          spawner.log.info(f"Enabling RTC for user {spawner.user.name}")
+
+        if "grader" in group_names:
+          spawner.log.info(f"Changing UID for {spawner.user.name}")
           spawner.uid = 2000
           spawner.gid = 100
 
@@ -108,20 +123,54 @@ hub:
 
       c.Spawner.pre_spawn_hook = pre_spawn_hook
 
+    03-custom-profile-list: |
+      # https://github.com/jupyterhub/jupyterhub/issues/2390
+
+      from kubespawner import KubeSpawner
+
+      class MyKubeSpawner(KubeSpawner):
+        async def options_form(self, spawner):
+          group_names = {group.name for group in spawner.user.groups}
+
+          if "collaborative" in group_names:
+            spawner.log.info(f"Enabling RTC for user {spawner.user.name}")
+
+            spawner.profile_list.extend(
+              [
+                  {
+                      'display_name': 'Collaborative',
+                      'description': 'Jupyter server with jupyterlab-collaboration.',
+                      'kubespawner_override': {
+                          'image': 'localhost:32000/cs1302nb__collab:0.1.2a',
+                      },
+                      'default': True,                      
+                  },
+              ]
+            )
+          return spawner._options_form_default()
+
+      c.JupyterHub.spawner_class = MyKubeSpawner
+
+
+
 cull:
   enabled: true
+  users: false
   adminUsers: false
-  timeout: 3600
-  every: 120
+  removeNamedServers: false
+  timeout: 300
+  every: 60
   concurrency: 60
-  maxAge: 21600
+  maxAge: 600
 
+debug:
+  enabled: true
 
 singleuser:
   cmd: start-singleuser.sh
   image: 
-    name: jupyter/minimal-notebook
-    tag: latest
+    name: localhost:32000/cs1302nb
+    tag: 0.1.1c
   storage:
     capacity: 10Gi
     homeMountPath: /home/jovyan
@@ -154,10 +203,15 @@ singleuser:
       description: |
         Default jupyter server run on Ubuntu.
       kubespawner_override:
-        image: localhost:32000/cs1302nb:0.1.1b
+        image: localhost:32000/cs1302nb:0.1.2a
     - display_name: Alpine
       description: |
         Lightweight jupyter server run on Alpine Linux. It may run faster but has less features.
       kubespawner_override:
-        image: localhost:32000/cs1302nb.alpine:0.1.1b
+        image: localhost:32000/cs1302nb_alpine:0.1.2a     
+    - display_name: bugbook
+      description: |
+        *** UNDER DEVELOPMENT ***
+      kubespawner_override:
+        image: localhost:32000/cs5489-notebook:0.0.2a
 

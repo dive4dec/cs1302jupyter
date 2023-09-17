@@ -183,6 +183,7 @@ RUN apt-get update --yes && \
 # Do all this in a single RUN command to avoid duplicating all of the
 # files across image layers when the permissions change
 WORKDIR /tmp
+
 RUN mamba install --yes \
     'notebook==7.0.*' \
     'jupyterlab==4.0.*' \
@@ -212,11 +213,11 @@ RUN mamba install --quiet --yes \
     'websockify=0.11.*' \
     'jupyter-vscode-proxy=0.2' \
     'jupyterlab-git=0.41.*' \
-    'jupytext=1.14.*' \
+    'jupytext=1.15.*' \
     'nbgitpuller=1.2.*' \
-    'black=23.3.*' \
+    'black=23.9.*' \
     'jupyterlab_code_formatter=2.2.*' \
-    'python-lsp-server=1.7.*' \
+    'python-lsp-server=1.8.*' \
     && \
     pip install --quiet --no-cache-dir \
     'jupyterlab_filesystem_access==0.5.*' \
@@ -274,8 +275,6 @@ RUN npm \
     tslab install --sys-prefix \
     && \
     mamba install --quiet --yes \
-    'pandas=2.0.*' \
-    'matplotlib-base=3.7.*' \
     'graphviz=8.1.*' \
     # 'xeus-python' \
     # C, C++
@@ -313,6 +312,7 @@ RUN mamba install --quiet --yes \
     'manim=0.17.*' \
     'pandas=2.0.*' \
     'matplotlib-base=3.7.*' \
+    'ipympl=0.9.*' \
     'sympy=1.*' \
     && \
     pip install --quiet --no-cache-dir \
@@ -324,7 +324,7 @@ RUN mamba install --quiet --yes \
 
 # Nbgrader
 RUN pip install --quiet --no-cache-dir \
-    'nbgrader>=v0.9.0a1' && \
+    'nbgrader==0.9.*' && \
     # git+https://github.com/dive4dec/nbgrader.git && \
     fix-permissions "${CONDA_DIR}"
 
@@ -353,9 +353,77 @@ RUN jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 # MyST Markdown CLI
 RUN npm install -g mystmd
 
-# Collaboration
+# # Collaboration
+# RUN mamba install --quiet --yes \
+#     'jupyter-collaboration=1.1.*' \
+#     && \
+#     # mamba clean --all -f -y && \
+#     fix-permissions "${CONDA_DIR}"
+
+# latex dependencies for mystmd
+USER root
+
+RUN \
+    apt-get update --yes && \
+    apt-get install --yes --no-install-recommends \
+    latexmk \
+    lmodern \
+    && \
+    paperconfig -p a4 \
+    # && \
+    # tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2021/tlnet-final \
+    # && \
+    # apt-get clean && rm -rf /var/lib/apt/lists/*
+    ;
+
+### Desktop ###
+RUN \
+    apt-get update --yes && \
+    apt-get install --yes --no-install-recommends \
+    emacs \    
+    thonny \
+    dbus-x11 \
+    libgl1-mesa-glx \
+    xfce4 \
+    xfce4-panel \
+    xfce4-session \
+    xfce4-settings \
+    xorg \
+    xubuntu-icon-theme
+
+# Xpra
+RUN \
+    wget -O "/usr/share/keyrings/xpra.asc" https://xpra.org/xpra.asc && \
+    wget -O "/etc/apt/sources.list.d/xpra.sources" https://raw.githubusercontent.com/Xpra-org/xpra/master/packaging/repos/jammy/xpra.sources && \
+    apt-get update --yes && \
+    apt-get install --yes --no-install-recommends \
+    xpra \
+    xpra-x11 \
+    xpra-html5
+    # x11-utils \
+    # xfonts-base \
+    # xvfb \
+    # python3-websockify python3-dbus python3-paramiko python3-pyinotify python3-netifaces \
+    # && \
+    # /usr/bin/pip3 install --quiet --no-cache-dir \
+    # 'pyxdg==0.28'
+
+# fix https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=908156
+RUN mkdir -p /run/xpra && \
+    mkdir -p /run/user/${NB_UID}/xpra && \
+    # fix permission for NB_USER to start xpra and create sockets under /run
+    chmod -R 700 /run/user && \
+    chmod -R 775 /run/xpra && \
+    chown -R ${NB_USER}:${NB_GID} /run
+
+USER ${NB_USER}
+
 RUN mamba install --quiet --yes \
-    'jupyter-collaboration=1.1.*' \
+    'websockify=0.11.*' \
+    && \
+    pip install --quiet --no-cache-dir \
+    'jupyter-remote-desktop-proxy==1.1.*' \
+    'jupyter-xprahtml5-proxy==0.3.*' \
     && \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
@@ -396,19 +464,11 @@ COPY start.sh /usr/local/bin/
 COPY start-notebook.sh start-singleuser.sh grader_setup /usr/local/bin/
 # Currently need to have both jupyter_notebook_config and jupyter_server_config to support classic and lab
 COPY jupyter_server_config.py docker_healthcheck.py /etc/jupyter/
+# customize xpra https://xpra.org/manual.html
+COPY --chown=${NB_USER}:${NB_GID} jupyter_xprahtml5_proxy_init.py /tmp/
+RUN mv /tmp/jupyter_xprahtml5_proxy_init.py "$(pip show jupyter-xprahtml5-proxy | grep Location | awk '{print $2}')/jupyter_xprahtml5_proxy/__init__.py"
 
 ENV TF_CPP_MIN_LOG_LEVEL=2
-
-# Switch back to jovyan to avoid accidental container runs as root
-USER ${NB_UID}
-
-WORKDIR "${HOME}"
-
-# ----------------------------------------------------------
-
-FROM prod as hub
-
-USER root
 
 ENV NBGRADER_UID=2000 \
     NBGRADER_USER=nbgrader
@@ -416,6 +476,28 @@ ENV NBGRADER_UID=2000 \
 # Create NBGRADER_USER with name nbgrader, UID=2000 and in the 'users' group
 # On jupyterhub, this user should be the owner of the course root and exchange folder for nbgrader.
 RUN useradd -l -M -s /bin/bash -N -u "${NBGRADER_UID}" "${NBGRADER_USER}"
+
+
+# Switch back to jovyan to avoid accidental container runs as root
+USER ${NB_UID}
+
+WORKDIR "${HOME}"
+
+
+# ----------------------------------------------------------
+
+FROM prod as collab
+
+USER ${NB_USER}
+
+# Collaboration
+RUN mamba install --quiet --yes \
+    'jupyter-collaboration=1.2.*' \
+    && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}"
+
+FROM prod as default
 
 USER ${NB_USER}
 

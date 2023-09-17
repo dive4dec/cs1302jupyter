@@ -54,28 +54,43 @@ hub:
           # collaborative accounts get added to this group
           # so it's easy to see which accounts are collaboration accounts
           "collaborative": [
-            "grader-cs1302"
+            "grader-cs1302",
+            "all-cs1302"
+          ],
+          "grader": [
+            "grader-cs1302",
           ],
           "formgrade-cs1302": []
       }
 
       c.JupyterHub.load_roles = [
         {
-            "name": f"access-grader-cs1302",
-            "scopes": [
-                f"access:servers!user=grader-cs1302",
-                f"admin:servers!user=grader-cs1302",
-                "admin-ui",
-                f"list:users!user=grader-cs1302",
-            ],
-            "groups": ["formgrade-cs1302"],
+          "name": "access-grader-cs1302",
+          "scopes": [
+              "access:servers!user=grader-cs1302",
+              "admin:servers!user=grader-cs1302",
+              "admin-ui",
+              "list:users!user=grader-cs1302",
+              "access:servers!user=all-cs1302",
+              "admin:servers!user=all-cs1302",
+              "list:users!user=all-cs1302",              
+          ],
+          "groups": ["formgrade-cs1302"],
         },
+        {
+          "name": "user",
+          "scopes": [
+              "self",
+              "access:servers!user=all-cs1302",
+          ],
+        }        
       ]
 
       def pre_spawn_hook(spawner):
         group_names = {group.name for group in spawner.user.groups}
-        if "collaborative" in group_names:
-          spawner.log.info(f"Enabling RTC for user {spawner.user.name}")
+
+        if "grader" in group_names:
+          spawner.log.info(f"Changing UID for {spawner.user.name}")
           spawner.uid = 2000
           spawner.gid = 100
 
@@ -115,11 +130,36 @@ hub:
 
       c.Spawner.pre_spawn_hook = pre_spawn_hook
 
-scheduling:
-  userScheduler:
-    enabled: true
-  podPriority:
-    enabled: true
+    03-custom-profile-list: |
+      # https://github.com/jupyterhub/jupyterhub/issues/2390
+
+      from kubespawner import KubeSpawner
+
+      class MyKubeSpawner(KubeSpawner):
+        async def options_form(self, spawner):
+          group_names = {group.name for group in spawner.user.groups}
+
+          if "collaborative" in group_names:
+            spawner.log.info(f"Enabling RTC for user {spawner.user.name}")
+            for profile in spawner.profile_list:
+              profile['default'] = False
+            spawner.profile_list.extend(
+              [
+                  {
+                      'display_name': 'Collaborative',
+                      'description': 'Jupyter server with jupyterlab-collaboration.',
+                      'kubespawner_override': {
+                          'image': 'localhost:32000/cs1302nb__collab:0.1.2a',
+                      },
+                      'default': True,                      
+                  },
+              ]
+            )
+          return spawner._options_form_default()
+
+      c.JupyterHub.spawner_class = MyKubeSpawner
+
+
 
 cull:
   enabled: true
@@ -150,16 +190,25 @@ singleuser:
   networkPolicy:
     egressAllowRules:
       privateIPs: true
+  extraNodeAffinity:
+    preferred:
+    - weight: 1
+      preference:
+        matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{hostname}}
   profileList:
     - default: true
       display_name: Default
       description: |
         Default jupyter server run on Ubuntu.
       kubespawner_override:
-        image: localhost:32000/cs1302nb:0.1.0e
+        image: localhost:32000/cs1302nb:0.1.2a
     - display_name: Alpine
       description: |
         Lightweight jupyter server run on Alpine Linux. It may run faster but has less features.
       kubespawner_override:
-        image: localhost:32000/cs1302nb.alpine:0.1.0e
+        image: localhost:32000/cs1302nb_alpine:0.1.2a
 
