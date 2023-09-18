@@ -4,6 +4,7 @@ python_data.*
 /.private/
 /.setup_*
 /lti.yaml
+/default.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
