@@ -112,7 +112,7 @@ RUN set -x && \
     if [ "${arch}" = "x86_64" ]; then \
         # Should be simpler, see <https://github.com/mamba-org/mamba/issues/1437>
         arch="64"; \
-    fi && \
+    fi &&  \
     wget --progress=dot:giga -O /tmp/micromamba.tar.bz2 \
         "https://micromamba.snakepit.net/api/micromamba/linux-${arch}/latest" && \
     tar -xvjf /tmp/micromamba.tar.bz2 --strip-components=1 bin/micromamba && \
@@ -184,10 +184,13 @@ RUN apt-get update --yes && \
 # files across image layers when the permissions change
 WORKDIR /tmp
 
+USER ${NB_UID}
+
 RUN mamba install --yes \
-    'notebook==7.0.*' \
-    'jupyterlab==4.0.*' \
-    'jupyterhub==4.0.*' \
+    'nodejs<19' \
+    'notebook==7.0.4' \
+    'jupyterlab==4.0.6' \
+    'jupyterhub==4.0.2' \
     && \
     jupyter notebook --generate-config && \
     # mamba clean --all -f -y && \
@@ -197,34 +200,17 @@ RUN mamba install --yes \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-ENV JUPYTER_PORT=8888
-EXPOSE $JUPYTER_PORT
+USER root
 
-ENV TZ=Hongkong
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# fix https://github.com/jupyter/docker-stacks/issues/815
-RUN cat /etc/skel/.bashrc >> /etc/bash.bashrc
-
-USER ${NB_UID}
-
-RUN mamba install --quiet --yes \
-    'code-server=4.16.*' \
-    'websockify=0.11.*' \
-    'jupyter-vscode-proxy=0.2' \
-    'jupyterlab-git=0.41.*' \
-    'jupytext=1.15.*' \
-    'nbgitpuller=1.2.*' \
-    'black=23.9.*' \
-    'jupyterlab_code_formatter=2.2.*' \
-    'python-lsp-server=1.8.*' \
+### code-server ###
+RUN apt-get update --yes && \
+    apt-get install --yes --no-install-recommends \
+    curl \
     && \
-    pip install --quiet --no-cache-dir \
-    'jupyterlab_filesystem_access==0.5.*' \
-    'jupyter-www-proxy' \
-    && \
-    mamba clean --all -f -y && \
-    fix-permissions "${CONDA_DIR}"
+    wget -q https://code-server.dev/install.sh -O /tmp/install.sh && \
+    sh /tmp/install.sh --version 4.17.1
+    #  && \
+    # apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Code extensions
 RUN for ext in \
@@ -235,9 +221,47 @@ RUN for ext in \
         sugatoray.vscode-git-extension-pack \
         Kelvin.vscode-sshfs \
         hediet.vscode-drawio \
+        genieai.chatgpt-vscode \
         ; do \
-        code-server --install-extension "$ext"; \
-    done
+        code-server --extensions-dir /usr/lib/code-server/lib/vscode/extensions --install-extension "$ext"; \
+    done && \
+    fix-permissions "${HOME}" && \
+    rm -rf ~/.cache/code-server/ && \
+    rm -rf /tmp/install.sh
+
+ENV JUPYTER_PORT=8888
+EXPOSE $JUPYTER_PORT
+
+ENV TZ=Hongkong
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# fix https://github.com/jupyter/docker-stacks/issues/815
+RUN cat /etc/skel/.bashrc >> /etc/bash.bashrc
+
+
+
+USER ${NB_UID}
+
+RUN mamba install --quiet --yes \
+    # 'code-server=4.17.1' \
+    'websockify=0.11.*' \
+    'jupyter-vscode-proxy=0.5' \
+    # 'jupyterlab-git=0.41.*' \
+    'jupytext=1.15.*' \
+    'nbgitpuller=1.2.*' \
+    'black=23.9.*' \
+    'jupyterlab_code_formatter=2.2.*' \
+    'python-lsp-server=1.8.*' \
+    'openai=0.28.*' \
+    # 'jupyter-ai=2.2.*' \
+    && \
+    pip install --quiet --no-cache-dir \
+    'jupyterlab_filesystem_access==0.5.*' \
+    'jupyter-www-proxy' \
+    && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}"
 
 USER root
 
@@ -255,7 +279,6 @@ RUN \
     fpc-source \
     # SQL
     sqlite3 \
-    # itikz
     pdf2svg
     # && \
     # apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -310,7 +333,7 @@ RUN npm \
 
 RUN mamba install --quiet --yes \
     'manim=0.17.*' \
-    'pandas=2.0.*' \
+    'pandas=2.1.*' \
     'matplotlib-base=3.7.*' \
     'ipympl=0.9.*' \
     'sympy=1.*' \
@@ -424,6 +447,7 @@ RUN mamba install --quiet --yes \
     pip install --quiet --no-cache-dir \
     'jupyter-remote-desktop-proxy==1.1.*' \
     'jupyter-xprahtml5-proxy==0.3.*' \
+    'jupyter_ai==2.2.*' \
     && \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
@@ -464,6 +488,8 @@ COPY start.sh /usr/local/bin/
 COPY start-notebook.sh start-singleuser.sh grader_setup /usr/local/bin/
 # Currently need to have both jupyter_notebook_config and jupyter_server_config to support classic and lab
 COPY jupyter_server_config.py docker_healthcheck.py /etc/jupyter/
+
+
 # customize xpra https://xpra.org/manual.html
 COPY --chown=${NB_USER}:${NB_GID} jupyter_xprahtml5_proxy_init.py /tmp/
 RUN mv /tmp/jupyter_xprahtml5_proxy_init.py "$(pip show jupyter-xprahtml5-proxy | grep Location | awk '{print $2}')/jupyter_xprahtml5_proxy/__init__.py"
@@ -500,4 +526,3 @@ RUN mamba install --quiet --yes \
 FROM prod as default
 
 USER ${NB_USER}
-
