@@ -45,7 +45,7 @@ setup: .setup_nfs .setup_hub
 	touch $@
 
 # Build and push hub and notebook images
-image: image.cs1302hub image.cs1302nb image.cs1302nb__collab image.cs1302nb_alpine image.cs1302nb_test
+image: image.cs1302hub image.cs1302nb image.cs1302nb__collab image.cs1302nb_alpine image.cs1302nb_test image.cs8695nb
 
 # Deploy a jupyterhub instance
 # NOTE: The necesary hub and notebook images should be built and pushed to the registry beforehand, e.g., with the command

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# need to restart servers
+jupyter server extension enable --user nbgrader.server_extensions.formgrader
+cat > ~/.jupyter/nbgrader_config.py << 'EOF'
+c=get_config()
+
+import os
+c.CourseDirectory.root = os.path.join(os.environ['HOME'], "cs1302i23a")
+EOF
+mkdir -p ~/exchange
+git clone git@github.com:dive4dec/cs1302i23a.git

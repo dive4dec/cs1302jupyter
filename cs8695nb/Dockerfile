@@ -8,8 +8,8 @@ ARG NB_GID="100"
 
 # Configure environment
 ENV CONDA_DIR=/opt/conda \
-    SHELL=/bin/bash \
     NB_USER="${NB_USER}" \
+    SHELL=/bin/bash \
     NB_UID=${NB_UID} \
     NB_GID=${NB_GID} \
     LC_ALL=en_US.UTF-8 \
@@ -226,7 +226,7 @@ RUN for ext in \
         code-server --extensions-dir /usr/lib/code-server/lib/vscode/extensions --install-extension "$ext"; \
     done && \
     fix-permissions "${HOME}" && \
-    fix-permissions "/usr/lib/code-server/lib/vscode/extensions" && \
+    fix-permissions /usr/lib/code-server/ && \
     rm -rf ~/.cache/code-server/ && \
     rm -rf /tmp/install.sh
 
@@ -449,10 +449,60 @@ RUN pip install --quiet --no-cache-dir \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
 
+# ----------------------------------------------------------
+
+### Tensorflow ###
+# minor issues: 
+# https://stackoverflow.com/questions/44232898/memoryerror-in-tensorflow-and-successful-numa-node-read-from-sysfs-had-negativ
+# tested with:
+# https://docs.vmware.com/en/VMware-vSphere-Bitfusion/4.0/Example-Guide/GUID-8F6BF9A8-DC1A-4ACD-A2FF-C9CD0B50A9DC.html
+RUN pip install --quiet \
+    # --no-cache-dir \
+    'tensorflow==2.13.*' \
+    'tensorflowjs==4.11.*' \
+    'tensorflow-datasets==4.9.*' \
+    'tensorflow-addons==0.21.*' \
+    && \
+    fix-permissions "${CONDA_DIR}"
+
+### Pytorch ###
+RUN mamba install --quiet --yes \
+    'pytorch=2.1.*' \
+    'torchvision=0.16.*' \
+    'torchaudio=2.1.*' \
+    'pytorch-cuda=11.8' \
+    -c pytorch -c nvidia \
+    && \
+    # mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}"
+
+RUN mamba install --quiet --yes \
+    altair \
+    bokeh \
+    bottleneck \
+    blas \
+    cython \
+    h5py \
+    matplotlib-base \
+    numba \
+    patsy \
+    pytables \
+    scikit-image \
+    seaborn \
+    sqlalchemy \
+    statsmodels \
+    xlrd \
+    && \
+    # mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}"
+
 # AI
 RUN pip install --quiet --no-cache-dir \
-    'jupyter_ai==2.2.*' \
-    'openai==0.28.*' \    
+    'jupyter_ai' \
+    'openai' \
+    'jupyter-resource-usage' \
+    'nvitop' \
+    'gpustat' \
     && \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
@@ -498,6 +548,12 @@ COPY jupyter_server_config.py docker_healthcheck.py /etc/jupyter/
 # customize xpra https://xpra.org/manual.html
 COPY --chown=${NB_USER}:${NB_GID} jupyter_xprahtml5_proxy_init.py /tmp/
 RUN mv /tmp/jupyter_xprahtml5_proxy_init.py "$(pip show jupyter-xprahtml5-proxy | grep Location | awk '{print $2}')/jupyter_xprahtml5_proxy/__init__.py"
+
+ENV TF_CPP_MIN_LOG_LEVEL=2
+
+ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=${CONDA_DIR}/lib
+ENV LD_LIBRARY_PATH="/opt/conda/lib/:${CONDA_DIR}/lib/python3.11/site-packages/nvidia/cudnn/lib/"
+
 
 ENV NBGRADER_UID=2000 \
     NBGRADER_USER=nbgrader

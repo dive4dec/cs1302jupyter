@@ -6,6 +6,7 @@ python_data.*
 /lti.yaml
 /default.yaml
 /test.yaml
+/cs8695.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
