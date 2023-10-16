@@ -188,8 +188,8 @@ USER ${NB_UID}
 
 RUN mamba install --yes \
     'nodejs<19' \
-    'notebook==7.0.4' \
-    'jupyterlab==4.0.6' \
+    'notebook==7.0.5' \
+    'jupyterlab==4.0.7' \
     'jupyterhub==4.0.2' \
     && \
     jupyter notebook --generate-config && \
@@ -334,6 +334,8 @@ RUN npm \
 
 RUN mamba install --quiet --yes \
     'manim=0.17.*' \
+    # 0.4.4 has bug
+    'manimpango=0.4.3' \
     'pandas=2.1.*' \
     'matplotlib-base=3.7.*' \
     'ipympl=0.9.*' \
@@ -341,7 +343,7 @@ RUN mamba install --quiet --yes \
     && \
     pip install --quiet --no-cache-dir \
     'divewidgets' \
-    'jupyterlab-myst==2.0.*' \
+    'jupyterlab-myst==2.1.*' \
     && \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
@@ -367,7 +369,7 @@ COPY --chown=${NB_USER}:${NB_GID} nbgrader_config.py ${CONDA_DIR}/etc/jupyter/nb
 
 # RISE
 RUN pip install --quiet --no-cache-dir \
-    'jupyterlab_rise==0.40.*' && \
+    'jupyterlab_rise==0.41.*' && \
     fix-permissions "${CONDA_DIR}"
 
 # Disable news and update
@@ -449,6 +451,15 @@ RUN pip install --quiet --no-cache-dir \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
 
+# AI
+RUN pip install --quiet --no-cache-dir \
+    'jupyter_ai' \
+    'openai' \
+    'jupyter-resource-usage' \
+    && \
+    # mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}"
+
 # ----------------------------------------------------------
 
 ### Tensorflow ###
@@ -493,19 +504,33 @@ RUN mamba install --quiet --yes \
     statsmodels \
     xlrd \
     && \
+    pip install --quiet --no-cache-dir \
+    'nvitop' \
+    'gpustat' \
+    'jdc' \
+    'jupyterlab-tensorboard-pro' && \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
 
-# AI
-RUN pip install --quiet --no-cache-dir \
-    'jupyter_ai' \
-    'openai' \
-    'jupyter-resource-usage' \
-    'nvitop' \
-    'gpustat' \
-    && \
+
+
+# https://github.com/Kaggle/docker-python/issues/1267
+RUN mamba install --quiet --yes \
+    openssh && \
+    # mamba install --quiet --yes -c intel intel-extension-for-pytorch && \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
+
+# USER root
+
+# RUN apt-get update --yes && \
+#     apt-get install --yes --no-install-recommends \
+#     gnupg && \
+#     wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null && \
+#     echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | tee /etc/apt/sources.list.d/oneAPI.list && \
+#     apt-get update --yes && \
+#     apt-get install --yes --no-install-recommends \
+#     intel-basekit
 
 # ----------------------------------------------------------
 # Cleanup
@@ -554,6 +579,8 @@ ENV TF_CPP_MIN_LOG_LEVEL=2
 ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=${CONDA_DIR}/lib
 ENV LD_LIBRARY_PATH="/opt/conda/lib/:${CONDA_DIR}/lib/python3.11/site-packages/nvidia/cudnn/lib/"
 
+# https://github.com/tensorflow/tensorboard/pull/3674
+ENV TENSORBOARD_PROXY_URL="/proxy/%PORT%/"
 
 ENV NBGRADER_UID=2000 \
     NBGRADER_USER=nbgrader

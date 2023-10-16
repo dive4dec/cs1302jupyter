@@ -188,8 +188,8 @@ USER ${NB_UID}
 
 RUN mamba install --yes \
     'nodejs<19' \
-    'notebook==7.0.4' \
-    'jupyterlab==4.0.6' \
+    'notebook==7.0.5' \
+    'jupyterlab==4.0.7' \
     'jupyterhub==4.0.2' \
     && \
     jupyter notebook --generate-config && \
@@ -226,7 +226,7 @@ RUN for ext in \
         code-server --extensions-dir /usr/lib/code-server/lib/vscode/extensions --install-extension "$ext"; \
     done && \
     fix-permissions "${HOME}" && \
-    fix-permissions "/usr/lib/code-server/lib/vscode/extensions" && \
+    fix-permissions /usr/lib/code-server/ && \
     rm -rf ~/.cache/code-server/ && \
     rm -rf /tmp/install.sh
 
@@ -334,6 +334,8 @@ RUN npm \
 
 RUN mamba install --quiet --yes \
     'manim=0.17.*' \
+    # 0.4.4 has bug
+    'manimpango=0.4.3' \
     'pandas=2.1.*' \
     'matplotlib-base=3.7.*' \
     'ipympl=0.9.*' \
@@ -341,7 +343,7 @@ RUN mamba install --quiet --yes \
     && \
     pip install --quiet --no-cache-dir \
     'divewidgets' \
-    'jupyterlab-myst==2.0.*' \
+    'jupyterlab-myst==2.1.*' \
     && \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
@@ -367,7 +369,7 @@ COPY --chown=${NB_USER}:${NB_GID} nbgrader_config.py ${CONDA_DIR}/etc/jupyter/nb
 
 # RISE
 RUN pip install --quiet --no-cache-dir \
-    'jupyterlab_rise==0.40.*' && \
+    'jupyterlab_rise==0.41.*' && \
     fix-permissions "${CONDA_DIR}"
 
 # Disable news and update
@@ -451,8 +453,9 @@ RUN pip install --quiet --no-cache-dir \
 
 # AI
 RUN pip install --quiet --no-cache-dir \
-    'jupyter_ai==2.2.*' \
-    'openai==0.28.*' \    
+    'jupyter_ai' \
+    'openai' \
+    'jupyter-resource-usage' \
     && \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
