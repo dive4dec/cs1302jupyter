@@ -1,4 +1,4 @@
-FROM jupyterhub/k8s-hub:3.0.3
+FROM jupyterhub/k8s-hub:3.1.0
 
 USER root
 

@@ -8,8 +8,8 @@ ARG NB_GID="100"
 
 # Configure environment
 ENV CONDA_DIR=/opt/conda \
-    NB_USER="${NB_USER}" \
     SHELL=/bin/bash \
+    NB_USER="${NB_USER}" \
     NB_UID=${NB_UID} \
     NB_GID=${NB_GID} \
     LC_ALL=en_US.UTF-8 \
@@ -188,8 +188,8 @@ USER ${NB_UID}
 
 RUN mamba install --yes \
     'nodejs<19' \
-    'notebook==7.0.5' \
-    'jupyterlab==4.0.7' \
+    'notebook==7.0.6' \
+    'jupyterlab==4.0.9' \
     'jupyterhub==4.0.2' \
     && \
     jupyter notebook --generate-config && \
@@ -208,7 +208,7 @@ RUN apt-get update --yes && \
     curl \
     && \
     wget -q https://code-server.dev/install.sh -O /tmp/install.sh && \
-    sh /tmp/install.sh --version 4.17.1
+    sh /tmp/install.sh --version 4.19.0
     #  && \
     # apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -248,16 +248,16 @@ RUN mamba install --quiet --yes \
     # 'code-server=4.17.1' \
     'websockify=0.11.*' \
     'jupyter-vscode-proxy=0.5' \
-    # 'jupyterlab-git=0.41.*' \
     'jupytext=1.15.*' \
     'nbgitpuller=1.2.*' \
     'black=23.9.*' \
     'jupyterlab_code_formatter=2.2.*' \
-    'python-lsp-server=1.8.*' \
+    'python-lsp-server=1.9.*' \
     # 'openai=0.28.*' \
     # 'jupyter-ai=2.2.*' \
     && \
     pip install --quiet --no-cache-dir \
+    'jupyterlab-git==0.50.*' \    
     'jupyterlab_filesystem_access==0.5.*' \
     'jupyter-www-proxy' \
     && \
@@ -340,6 +340,7 @@ RUN mamba install --quiet --yes \
     'matplotlib-base=3.7.*' \
     'ipympl=0.9.*' \
     'sympy=1.*' \
+    'jupyterlite=0.2.*' \
     && \
     pip install --quiet --no-cache-dir \
     'divewidgets' \
@@ -367,9 +368,10 @@ RUN jupyter server extension disable --sys-prefix nbgrader.server_extensions.for
 
 COPY --chown=${NB_USER}:${NB_GID} nbgrader_config.py ${CONDA_DIR}/etc/jupyter/nbgrader_config.py
 
-# RISE
+# Slideshow
 RUN pip install --quiet --no-cache-dir \
-    'jupyterlab_rise==0.41.*' && \
+    'jupyterlab_rise==0.41.*' \
+    'jupyterlab-deck==0.2.0a0' && \
     fix-permissions "${CONDA_DIR}"
 
 # Disable news and update
@@ -393,6 +395,7 @@ RUN \
     apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
     latexmk \
+    biber \
     lmodern \
     && \
     paperconfig -p a4 \
@@ -455,7 +458,7 @@ RUN pip install --quiet --no-cache-dir \
 RUN pip install --quiet --no-cache-dir \
     'jupyter_ai' \
     'openai' \
-    'jupyter-resource-usage' \
+    'jupyter-resource-usage==1.0.*' \
     && \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
@@ -498,7 +501,6 @@ RUN mamba install --quiet --yes \
     numba \
     patsy \
     pytables \
-    scikit-image \
     seaborn \
     sqlalchemy \
     statsmodels \
@@ -557,6 +559,8 @@ COPY --from=base /var/ /var/
 COPY --from=base /home/ /home/
 COPY --from=base /opt/ /opt/
 
+USER root
+
 # Configure container startup
 ENTRYPOINT ["tini", "-g", "--"]
 # Configure container startup
@@ -596,7 +600,7 @@ USER ${NB_UID}
 WORKDIR "${HOME}"
 
 
-# ----------------------------------------------------------
+# # ----------------------------------------------------------
 
 FROM prod as collab
 

@@ -15,8 +15,34 @@ hub:
   nodeSelector:
     kubernetes.io/hostname: dive
   image:
-    name: localhost:32000/hub
-    tag: 0.0.2a
+    name: localhost:32000/cs1302hub
+    tag: 0.1.2h
+  loadRoles:
+    # Should use this, not hub.config.JupyterHub.load_roles - that will
+    # override any existing load_roles set by z2jh
+    access-grader-cs1302:
+      scopes:
+        - access:servers!user=grader-cs1302
+        - admin:servers!user=grader-cs1302
+        - admin-ui
+        - list:users!user=grader-cs1302
+        - access:servers!user=all-cs1302
+        - admin:servers!user=all-cs1302
+        - list:users!user=all-cs1302
+      groups:
+        - formgrade-cs1302
+    user:
+      scopes:
+        - self
+        - access:servers!user=all-cs1302
+    access-test:
+      scopes:
+        - access:servers!user=test-grader-cs1302
+        - admin:servers!user=test-grader-cs1302
+        - admin-ui
+        - list:users!user=test-grader-cs1302  
+      groups: 
+        - formgrade-cs1302              
   config:
     Authenticator:
       admin_users:
@@ -99,52 +125,27 @@ hub:
       c.JupyterHub.load_groups = {
           # collaborative accounts get added to this group
           # so it's easy to see which accounts are collaboration accounts
-          "collaborative": [
-            "grader-cs1302",
-            "all-cs1302",
-            "test-grader-cs1302",
-          ],
-          "grader": [
-            "grader-cs1302",
-          ],
-          "test": [
-            "test-grader-cs1302"
-          ],
-          "formgrade-cs1302": [],
+          "collaborative": {
+            "users": [
+              "grader-cs1302",
+              "all-cs1302",
+              "test-grader-cs1302",
+            ],          
+          },
+          "grader": {
+            "users": [
+              "grader-cs1302",
+            ],
+          },
+          "test": {
+            "users": [
+              "test-grader-cs1302"
+            ],
+          },
+          "formgrade-cs1302": {
+            "users": []
+          },
       }
-
-      c.JupyterHub.load_roles = [
-        {
-          "name": "access-grader-cs1302",
-          "scopes": [
-              "access:servers!user=grader-cs1302",
-              "admin:servers!user=grader-cs1302",
-              "admin-ui",
-              "list:users!user=grader-cs1302",
-              "access:servers!user=all-cs1302",
-              "admin:servers!user=all-cs1302",
-              "list:users!user=all-cs1302",              
-          ],
-          "groups": ["formgrade-cs1302"],
-        },
-        {
-          "name": "user",
-          "scopes": [
-              "self",
-              "access:servers!user=all-cs1302",
-          ],
-        },
-        {
-          "name": "access-test",
-          "scopes": [
-              "access:servers!user=test-grader-cs1302",
-              "admin:servers!user=test-grader-cs1302",
-              "admin-ui",
-              "list:users!user=test-grader-cs1302",
-          ],
-          "groups": ["formgrade-cs1302"],
-        },
-      ]
 
       def pre_spawn_hook(spawner):
         group_names = {group.name for group in spawner.user.groups}
@@ -209,7 +210,7 @@ hub:
                       'display_name': 'Collaborative',
                       'description': 'Jupyter server with jupyterlab-collaboration.',
                       'kubespawner_override': {
-                          'image': 'localhost:32000/cs1302nb__collab:0.1.2a',
+                          'image': 'localhost:32000/cs1302nb__collab:0.1.2h',
                       },
                       'default': True,                      
                   },
@@ -226,7 +227,7 @@ hub:
                       'display_name': 'Test Notebook',
                       'description': 'Jupyter server for testing purpose',
                       'kubespawner_override': {
-                          'image': 'localhost:32000/cs1302nb_test:0.1.2a',
+                          'image': 'localhost:32000/cs1302nb__collab:0.1.2h',
                       },
                       'default': True,                      
                   },
@@ -242,12 +243,35 @@ hub:
 cull:
   enabled: true
   adminUsers: false
-  timeout: 14400
-  every: 120
+  timeout: 3600
+  every: 300
   concurrency: 60
-  maxAge: 21600
+  maxAge: 7200
 
 singleuser:
+  extraFiles:
+    # jupyter_notebook_config reference: https://jupyter-notebook.readthedocs.io/en/stable/config.html
+    jupyter_notebook_config.json:
+      mountPath: /etc/jupyter/jupyter_notebook_config.json
+      # data is a YAML structure here but will be rendered to JSON file as our
+      # file extension is ".json".
+      data:
+        MappingKernelManager:
+          # cull_idle_timeout: timeout (in seconds) after which an idle kernel is
+          # considered ready to be culled
+          cull_idle_timeout: 3600 # default: 0
+
+          # cull_interval: the interval (in seconds) on which to check for idle
+          # kernels exceeding the cull timeout value
+          cull_interval: 300 # default: 300
+
+          # cull_connected: whether to consider culling kernels which have one
+          # or more connections
+          cull_connected: false # default: false
+
+          # cull_busy: whether to consider culling kernels which are currently
+          # busy running some code
+          cull_busy: false # default: false
   cmd: start-singleuser.sh
   image: 
     name: jupyter/minimal-notebook
@@ -285,15 +309,10 @@ singleuser:
       description: |
         Default jupyter server run on Ubuntu.
       kubespawner_override:
-        image: localhost:32000/cs1302nb:0.1.2a
+        image: localhost:32000/cs1302nb:0.1.2h
     - display_name: Alpine
       description: |
         Lightweight jupyter server run on Alpine Linux. It may run faster but has less features.
       kubespawner_override:
-        image: localhost:32000/cs1302nb_alpine:0.1.2a     
-    # - display_name: bugbook
-    #   description: |
-    #     *** UNDER DEVELOPMENT ***
-    #   kubespawner_override:
-    #     image: localhost:32000/cs5489-notebook:0.0.2a
+        image: localhost:32000/cs1302nb_alpine:0.1.2h
 
