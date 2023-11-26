@@ -523,7 +523,11 @@ RUN mamba install --quiet --yes \
     # mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
 
-# USER root
+USER root
+
+# Maxima
+COPY maxima/ /tmp/maxima/
+RUN bash /buildscript.sh
 
 # RUN apt-get update --yes && \
 #     apt-get install --yes --no-install-recommends \
