@@ -10,6 +10,7 @@ set -e
 MAXIMA_VERSION=5.44.0
 SBCL_VERSION=2.3.10
 SRC=/tmp/src
+mkdir -p /tmp/src
 
 apt-get update --yes
 apt-get install --yes --no-install-recommends wget make gcc texinfo # curl libcap2-bin

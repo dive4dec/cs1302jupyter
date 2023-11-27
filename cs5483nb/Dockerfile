@@ -470,14 +470,15 @@ RUN pip install --quiet --no-cache-dir \
 # https://stackoverflow.com/questions/44232898/memoryerror-in-tensorflow-and-successful-numa-node-read-from-sysfs-had-negativ
 # tested with:
 # https://docs.vmware.com/en/VMware-vSphere-Bitfusion/4.0/Example-Guide/GUID-8F6BF9A8-DC1A-4ACD-A2FF-C9CD0B50A9DC.html
-RUN pip install --quiet \
-    # --no-cache-dir \
-    'tensorflow==2.13.*' \
-    'tensorflowjs==4.11.*' \
-    'tensorflow-datasets==4.9.*' \
-    'tensorflow-addons==0.21.*' \
-    && \
-    fix-permissions "${CONDA_DIR}"
+
+# RUN pip install --quiet \
+#     # --no-cache-dir \
+#     'tensorflow==2.13.*' \
+#     'tensorflowjs==4.11.*' \
+#     'tensorflow-datasets==4.9.*' \
+#     'tensorflow-addons==0.21.*' \
+#     && \
+#     fix-permissions "${CONDA_DIR}"
 
 ### Pytorch ###
 RUN mamba install --quiet --yes \
@@ -527,8 +528,20 @@ USER root
 
 # Maxima
 COPY maxima/ /tmp/maxima/
-RUN bash /buildscript.sh
+RUN bash /tmp/maxima/buildscript.sh
 
+COPY --chown=${NB_USER}:${NB_GID} quicklisp /tmp/quicklisp
+RUN apt-get update --yes && \
+    apt-get install --yes --no-install-recommends libzmq3-dev && \
+    mkdir -p /opt/quicklisp && chown -R ${NB_USER} $_ && fix-permissions $_ && \
+    mv /tmp/quicklisp/sbclrc /etc/
+    
+USER ${NB_USER}
+RUN bash /tmp/quicklisp/buildscript.sh
+
+# conflict with jupyter-ai due to protobuf downgrade
+# Also read buffer timeout
+#
 # RUN apt-get update --yes && \
 #     apt-get install --yes --no-install-recommends \
 #     gnupg && \
@@ -599,12 +612,12 @@ RUN useradd -l -M -s /bin/bash -N -u "${NBGRADER_UID}" "${NBGRADER_USER}"
 
 
 # Switch back to jovyan to avoid accidental container runs as root
-USER ${NB_UID}
+# USER ${NB_UID}
 
 WORKDIR "${HOME}"
 
 
-# # ----------------------------------------------------------
+# ----------------------------------------------------------
 
 FROM prod as collab
 

@@ -1,0 +1,6 @@
+;;; -*- lisp -*-
+;;; System-wide startup file for sbcl
+
+(let ((quicklisp-init #P"/opt/quicklisp/ql/setup.lisp"))
+(when (probe-file quicklisp-init)
+    (load quicklisp-init)))
