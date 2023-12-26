@@ -208,7 +208,7 @@ RUN apt-get update --yes && \
     curl \
     && \
     wget -q https://code-server.dev/install.sh -O /tmp/install.sh && \
-    sh /tmp/install.sh --version 4.19.0
+    sh /tmp/install.sh --version 4.20.0
     #  && \
     # apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -248,9 +248,9 @@ RUN mamba install --quiet --yes \
     # 'code-server=4.17.1' \
     'websockify=0.11.*' \
     'jupyter-vscode-proxy=0.5' \
-    'jupytext=1.15.*' \
+    'jupytext=1.16.*' \
     'nbgitpuller=1.2.*' \
-    'black=23.9.*' \
+    'black=23.12.*' \
     'jupyterlab_code_formatter=2.2.*' \
     'python-lsp-server=1.9.*' \
     # 'openai=0.28.*' \
@@ -333,11 +333,10 @@ RUN npm \
     rm -rf /tmp/ijava
 
 RUN mamba install --quiet --yes \
-    'manim=0.17.*' \
-    # 0.4.4 has bug
-    'manimpango=0.4.3' \
+    'manim=0.18.*' \
+    'manimpango=0.5.*' \
     'pandas=2.1.*' \
-    'matplotlib-base=3.7.*' \
+    'matplotlib-base=3.8.*' \
     'ipympl=0.9.*' \
     'sympy=1.*' \
     'jupyterlite=0.2.*' \
@@ -370,8 +369,9 @@ COPY --chown=${NB_USER}:${NB_GID} nbgrader_config.py ${CONDA_DIR}/etc/jupyter/nb
 
 # Slideshow
 RUN pip install --quiet --no-cache-dir \
-    'jupyterlab_rise==0.41.*' \
-    'jupyterlab-deck==0.2.0a0' && \
+    # not compatible with jupyterlab-myst
+    # 'jupyterlab_rise==0.42.*' \
+    'jupyterlab-deck==0.2.0' && \
     fix-permissions "${CONDA_DIR}"
 
 # Disable news and update
@@ -428,14 +428,14 @@ RUN \
     apt-get install --yes --no-install-recommends \
     xpra \
     xpra-x11 \
-    xpra-html5
-    # x11-utils \
-    # xfonts-base \
-    # xvfb \
+    xpra-html5 \
+    x11-utils \
+    xfonts-base \
+    xvfb \
     # python3-websockify python3-dbus python3-paramiko python3-pyinotify python3-netifaces \
-    # && \
-    # /usr/bin/pip3 install --quiet --no-cache-dir \
-    # 'pyxdg==0.28'
+    && \
+    /usr/bin/pip3 install --quiet --no-cache-dir \
+    'pyxdg==0.28'
 
 # fix https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=908156
 RUN mkdir -p /run/xpra && \
@@ -471,14 +471,15 @@ RUN pip install --quiet --no-cache-dir \
 # tested with:
 # https://docs.vmware.com/en/VMware-vSphere-Bitfusion/4.0/Example-Guide/GUID-8F6BF9A8-DC1A-4ACD-A2FF-C9CD0B50A9DC.html
 
-# RUN pip install --quiet \
-#     # --no-cache-dir \
-#     'tensorflow==2.13.*' \
-#     'tensorflowjs==4.11.*' \
-#     'tensorflow-datasets==4.9.*' \
-#     'tensorflow-addons==0.21.*' \
-#     && \
-#     fix-permissions "${CONDA_DIR}"
+RUN pip install --quiet \
+    # --no-cache-dir \
+    'tensorflow==2.15.*' \
+    'tensorflowjs==4.15.*' \
+    # downgraded protobuf
+    # 'tensorflow-datasets==4.9.*' \
+    'tensorflow-addons==0.23.*' \
+    && \
+    fix-permissions "${CONDA_DIR}"
 
 ### Pytorch ###
 RUN mamba install --quiet --yes \
@@ -550,6 +551,59 @@ RUN bash /tmp/quicklisp/buildscript.sh
 #     apt-get update --yes && \
 #     apt-get install --yes --no-install-recommends \
 #     intel-basekit
+
+# WEKA
+
+USER root
+
+### Weka and python-weka-wrapper ###
+RUN wget -q -O /tmp/weka.deb 'https://www.cs.waikato.ac.nz/~ml/weka/snapshots/stable-3-8.deb' && \
+    apt-get update --yes && \
+    apt-get install --yes --no-install-recommends \
+    # java
+    # openjdk-11-jre \
+    # openjdk-11-jdk \
+    # python3-dev \
+    # imagemagick \
+    /tmp/weka.deb \
+    && \
+    echo 'alias weka="/usr/bin/weka-stable-gui"' >> /etc/bash.bashrc && \
+    rm /tmp/weka.deb
+    # && \
+    # apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update --yes && \
+    # wget -q https://download1.rstudio.org/electron/jammy/amd64/rstudio-2023.12.0-369-amd64.deb -O /tmp/rstudio.deb && \
+    apt-get install --yes --no-install-recommends \
+    'r-base'
+    # /tmp/rstudio.deb && \
+    # apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    # rm /tmp/rstudio.deb
+
+RUN R -e "install.packages('IRkernel', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('ClusterR', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('cluster', dependencies=TRUE, repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('dbscan', dependencies=TRUE, repos='http://cran.rstudio.com/')"
+
+USER ${NB_USER}
+
+# R
+RUN R -e "IRkernel::installspec(sys_prefix = TRUE)"
+
+
+# ML packages
+# RUN export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64" && \
+#     mamba install --quiet --yes \
+#     'biopython=1.*' \
+#     && \
+#     pip install --quiet --no-cache-dir \
+#     'python-javabridge==4.0.*' \
+#     'python-weka-wrapper3==0.2.*' \
+#     # 'pygraphviz==1.9' \
+#     # 'dit==1.2.*' \
+#     && \
+#     mamba clean --all -f -y && \
+#     fix-permissions "${CONDA_DIR}"
 
 # ----------------------------------------------------------
 # Cleanup

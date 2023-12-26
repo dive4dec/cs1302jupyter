@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER=frolvlad/alpine-glibc:alpine-3.17_glibc-2.34
+ARG BASE_CONTAINER=frolvlad/alpine-glibc:alpine-3.19_glibc-2.34
 
 FROM ${BASE_CONTAINER} as foundation
 
@@ -87,9 +87,9 @@ RUN set -x && \
     if [ "${arch}" = "x86_64" ]; then \
         # Should be simpler, see <https://github.com/mamba-org/mamba/issues/1437>
         arch="64"; \
-    fi && \
+    fi &&  \
     wget --progress=dot:giga -O /tmp/micromamba.tar.bz2 \
-        "https://micromamba.snakepit.net/api/micromamba/linux-${arch}/latest" && \
+        "https://github.com/mamba-org/micromamba-releases/releases/download/1.5.6-0/micromamba-linux-${arch}.tar.bz2" && \
     tar -xvjf /tmp/micromamba.tar.bz2 --strip-components=1 bin/micromamba && \
     rm /tmp/micromamba.tar.bz2 && \
     PYTHON_SPECIFIER="python=${PYTHON_VERSION}" && \
@@ -116,8 +116,9 @@ RUN set -x && \
 # Do all this in a single RUN command to avoid duplicating all of the
 # files across image layers when the permissions change
 RUN mamba install --yes \
-    'notebook==7.0.5' \
-    'jupyterlab==4.0.7' \
+    'nodejs<19' \
+    'notebook==7.0.6' \
+    'jupyterlab==4.0.9' \
     'jupyterhub==4.0.2' \
     && \
     jupyter notebook --generate-config && \
@@ -132,15 +133,15 @@ RUN mamba install --yes \
 RUN mamba install --quiet --yes \
     'code-server=4.16.*' \
     'websockify=0.11.*' \
-    'jupyter-vscode-proxy=0.2' \
-    # 'jupyterlab-git=0.41.*' \
-    'jupytext=1.15.*' \
+    'jupyter-vscode-proxy=0.5' \
+    'jupytext=1.16.*' \
     'nbgitpuller=1.2.*' \
-    'black=23.9.*' \
+    'black=23.12.*' \
     'jupyterlab_code_formatter=2.2.*' \
-    'python-lsp-server=1.8.*' \
+    'python-lsp-server=1.9.*' \
     && \
     pip install --quiet --no-cache-dir \
+    'jupyterlab-git==0.50.*' \    
     'jupyterlab_filesystem_access==0.5.*' \
     'jupyter-www-proxy' \
     && \
@@ -156,21 +157,24 @@ RUN for ext in \
         sugatoray.vscode-git-extension-pack \
         Kelvin.vscode-sshfs \
         hediet.vscode-drawio \
+        genieai.chatgpt-vscode \
         ; do \
         code-server --install-extension "$ext"; \
     done
 
 # For cs1302
 RUN mamba install --quiet --yes \
-    'manim=0.17.*' \
-    'pandas=2.0.*' \
-    'matplotlib-base=3.7.*' \
+    'manim=0.18.*' \
+    'manimpango=0.5.*' \
+    'pandas=2.1.*' \
+    'matplotlib-base=3.8.*' \
     'ipympl=0.9.*' \
     'sympy=1.*' \
+    'jupyterlite=0.2.*' \
     && \
     pip install --quiet --no-cache-dir \
     'divewidgets' \
-    'jupyterlab-myst==2.0.*' \
+    'jupyterlab-myst==2.1.*' \
     && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}"
@@ -201,7 +205,9 @@ COPY jupyter_server_config.py docker_healthcheck.py /etc/jupyter/
 
 # RISE
 RUN pip install --quiet --no-cache-dir \
-    'jupyterlab_rise==0.40.*' && \
+    # not compatible with jupyterlab-myst
+    # 'jupyterlab_rise==0.42.*' \
+    'jupyterlab-deck==0.2.0' && \
     fix-permissions "${CONDA_DIR}"
 
 # Disable news and update

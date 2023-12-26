@@ -203,12 +203,8 @@ RUN mamba install --yes \
 USER root
 
 ### code-server ###
-RUN apt-get update --yes && \
-    apt-get install --yes --no-install-recommends \
-    curl \
-    && \
-    wget -q https://code-server.dev/install.sh -O /tmp/install.sh && \
-    sh /tmp/install.sh --version 4.19.0
+RUN wget -q https://code-server.dev/install.sh -O /tmp/install.sh && \
+    sh /tmp/install.sh --version 4.20.0
     #  && \
     # apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -248,9 +244,9 @@ RUN mamba install --quiet --yes \
     # 'code-server=4.17.1' \
     'websockify=0.11.*' \
     'jupyter-vscode-proxy=0.5' \
-    'jupytext=1.15.*' \
+    'jupytext=1.16.*' \
     'nbgitpuller=1.2.*' \
-    'black=23.9.*' \
+    'black=23.12.*' \
     'jupyterlab_code_formatter=2.2.*' \
     'python-lsp-server=1.9.*' \
     # 'openai=0.28.*' \
@@ -333,11 +329,10 @@ RUN npm \
     rm -rf /tmp/ijava
 
 RUN mamba install --quiet --yes \
-    'manim=0.17.*' \
-    # 0.4.4 has bug
-    'manimpango=0.4.3' \
+    'manim=0.18.*' \
+    'manimpango=0.5.*' \
     'pandas=2.1.*' \
-    'matplotlib-base=3.7.*' \
+    'matplotlib-base=3.8.*' \
     'ipympl=0.9.*' \
     'sympy=1.*' \
     'jupyterlite=0.2.*' \
@@ -370,8 +365,9 @@ COPY --chown=${NB_USER}:${NB_GID} nbgrader_config.py ${CONDA_DIR}/etc/jupyter/nb
 
 # Slideshow
 RUN pip install --quiet --no-cache-dir \
-    'jupyterlab_rise==0.41.*' \
-    'jupyterlab-deck==0.2.0a0' && \
+    # not compatible with jupyterlab-myst
+    # 'jupyterlab_rise==0.42.*' \
+    'jupyterlab-deck==0.2.0' && \
     fix-permissions "${CONDA_DIR}"
 
 # Disable news and update
