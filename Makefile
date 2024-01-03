@@ -2,14 +2,14 @@ SHELL=/bin/bash
 
 # Customizations:
 # Version for tagging docker images
-VERSION=0.1.3a
+VERSION=0.1.3b
 
 # Application name:
 #   - Used to define part of the helm release name, e.g., in the make command helm-upgrade.%.
 #   - Used to define part of the kubernetes namespace, e.g., in the make command helm-upgrade.%.
 #   - Must be unique among all jupyterhub instances deployed in the cluster because 
 #     resources of the helm deployment are identified by namespace and/or release name.
-main=cs1302-23a
+main=23b
 
 # Additional options. E.g., to test helm upgrade:
 #   make helm_upgrade -e options='--dry-run --debug'
@@ -45,7 +45,7 @@ setup: .setup_nfs .setup_hub
 	touch $@
 
 # Build and push hub and notebook images
-image: image.cs1302hub image.cs1302nb image.cs1302nb__collab image.cs1302nb_alpine image.cs1302nb_test image.cs8695nb image.cs8695nb__collab image.cs5483nb image.cs5483nb__collab
+image: image.jhub image.cs1302nb image.cs1302nb__collab image.cs1302nb_alpine image.cs1302nb_test image.cs8695nb image.cs8695nb__collab image.cs5483nb image.cs5483nb__collab
 
 # Deploy a jupyterhub instance
 # NOTE: The necesary hub and notebook images should be built and pushed to the registry beforehand, e.g., with the command
